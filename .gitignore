@@ -1,0 +1,35 @@
+# Frontend: odvisnosti in rezultati gradnje
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+
+# Backend: rezultati gradnje in uporabniške nastavitve
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# Lokalni podatki okolja; predloge ostanejo v repozitoriju
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Razvojna okolja
+.vs/
+.vscode/
+.idea/
+
+# Dnevniki in rezultati preverjanja
+*.log
+logs/
+coverage/
+TestResults/
+
+# Datoteke operacijskega sistema
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db
