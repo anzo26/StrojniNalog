@@ -1,0 +1,35 @@
+# Frontend
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+
+# Backend
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# Lokalni podatki okolja
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Razvojna okolja
+.vs/
+.vscode/
+.idea/
+
+# Logi
+*.log
+logs/
+coverage/
+TestResults/
+
+# Datoteke OS
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db
