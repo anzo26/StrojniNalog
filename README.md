@@ -31,6 +31,68 @@ Projekt je trenutno v fazi priprave dokumentacije in načrtovanja implementacije
 - `backend/` – API, poslovna pravila in dostop do podatkov.
 - `docs/` – projektna dokumentacija, wireframe-i in ADR.
 
-## Razvojni proces
+## Lokalni razvoj
 
-Razvoj poteka po strategiji GitHub Flow. Spremembe pripravljamo na ločenih delovnih vejah in jih v `main` združujemo prek pull requestov.
+### Predpogoji
+- .NET SDK 10
+- Node.js 24 in npm
+- Docker z Docker Compose
+- Orodje dotnet-ef 10, usklajeno z različico EF Core v projektu
+
+Vse ukaze izvajamo iz korenske mape repozitorija, razen kjer je navedeno drugače.
+
+### 1. Nastavitve okolja
+Datoteko `.env.example` kopirajte v `.env`.
+
+V `.env` nastavite `POSTGRES_PASSWORD` in po potrebi spremenite `POSTGRES_PORT`. Datoteka `.env` se ne vključuje v Git.
+
+### 2. Zagon PostgreSQL
+Zaženite Docker in izvedite:
+
+```bash
+docker compose up -d
+```
+
+### 3. Povezava backenda z bazo
+Povezavo lokalno shranite v .NET User Secrets:
+
+```bash
+dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Host=localhost;Port=5432;Database=strojninalog;Username=postgres;Password=TVOJE_GESLO' --project backend/StrojniNalog.Api.csproj
+```
+
+`TVOJE_GESLO` zamenjajte z geslom iz `.env`. Če uporabljate drug port, prilagodite tudi `Port`.
+
+Backend pri neposrednem lokalnem zagonu datoteke `.env` ne bere samodejno.
+
+### 4. Priprava baze
+Namestite orodje dotnet-ef 10, če še ni nameščeno:
+
+```bash
+dotnet tool install --global dotnet-ef --version "10.*"
+```
+
+Izvedite migracije:
+
+```bash
+dotnet ef database update --project backend/StrojniNalog.Api.csproj -- --environment Development
+```
+
+Ukaz ustvari tabele in doda začetne vrste storitev ter stroje. Ponovno izvajanje ne podvoji nespremenjenih začetnih podatkov.
+
+### 5. Zagon backenda
+```bash
+dotnet run --project backend/StrojniNalog.Api.csproj
+```
+
+### 6. Zagon frontenda
+V drugem terminalu odprite mapo `frontend` in izvedite:
+
+```bash
+npm ci
+npm run dev
+```
+
+## Trenutno stanje
+Pripravljeni so osnova frontenda in backenda, poslovna baza, migracije ter začetni podatki.
+
+Docker Compose trenutno zaganja PostgreSQL. Skupni zagon vseh storitev, Keycloak in poslovne funkcionalnosti sledijo v nadaljnjih razvojnih nalogah.
