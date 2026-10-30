@@ -1,5 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using StrojniNalog.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException( "Povezava z bazo DefaultConnection ni nastavljena.");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString)
+        .UseSeeding((context, _) => DatabaseSeeder.Seed((AppDbContext)context)));
+        
 // Add services to the container.
 
 builder.Services.AddControllers();
