@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:5176
+
+### Osnovni naslov API-ja
+GET {{baseUrl}}/
+Accept: application/json
+
+### Moj profil z veljavnim žetonom
+# @prompt accessToken Prilepi samo access_token
+GET {{baseUrl}}/api/uporabniki/me
+Authorization: Bearer {{accessToken}}
+Accept: application/json
