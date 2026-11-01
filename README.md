@@ -2,8 +2,6 @@
 
 Spletna rešitev za naročanje in organizacijo storitev z gradbeno mehanizacijo. Naročnik odda naročilo, organizator ga obravnava ter določi termin, stroj in izvajalca. Izvajalec evidentira opravljeno delo, organizator pa evidenco pregleda in zaključi delovni nalog.
 
-Projekt je trenutno v fazi priprave dokumentacije in načrtovanja implementacije.
-
 ## Predvidene tehnologije
 
 | Del rešitve | Tehnologije |
@@ -44,14 +42,27 @@ Vse ukaze izvajamo iz korenske mape repozitorija, razen kjer je navedeno drugač
 ### 1. Nastavitve okolja
 Datoteko `.env.example` kopirajte v `.env`.
 
-V `.env` nastavite `POSTGRES_PASSWORD` in po potrebi spremenite `POSTGRES_PORT`. Datoteka `.env` se ne vključuje v Git.
+Nastavite:
+- `POSTGRES_PASSWORD` – geslo skrbnika PostgreSQL;
+- `KEYCLOAK_DB_PASSWORD` – geslo uporabnika baze Keycloak;
+- `KEYCLOAK_ADMIN_PASSWORD` – geslo začetnega skrbnika Keycloaka.
 
-### 2. Zagon PostgreSQL
+Po potrebi prilagodite `POSTGRES_PORT` in `KEYCLOAK_PORT`.
+
+### 2. Zagon PostgreSQL in Keycloaka
 Zaženite Docker in izvedite:
 
 ```bash
 docker compose up -d
 ```
+
+Pred izvajanjem migracij počakajte, da je PostgreSQL pripravljen. Stanje preverite z:
+
+```bash
+docker compose ps
+```
+
+Storitev `keycloak-db-init` pripravi bazo in uporabnika Keycloaka.
 
 ### 3. Povezava backenda z bazo
 Povezavo lokalno shranite v .NET User Secrets:
@@ -60,11 +71,11 @@ Povezavo lokalno shranite v .NET User Secrets:
 dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Host=localhost;Port=5432;Database=strojninalog;Username=postgres;Password=TVOJE_GESLO' --project backend/StrojniNalog.Api.csproj
 ```
 
-`TVOJE_GESLO` zamenjajte z geslom iz `.env`. Če uporabljate drug port, prilagodite tudi `Port`.
+`TVOJE_GESLO` zamenjajte z vrednostjo `POSTGRES_PASSWORD` iz `.env`. Če uporabljate drug port ali uporabnika, prilagodite tudi `Port` in `Username`.
 
 Backend pri neposrednem lokalnem zagonu datoteke `.env` ne bere samodejno.
 
-### 4. Priprava baze
+### 4. Priprava poslovne baze
 Namestite orodje dotnet-ef 10, če še ni nameščeno:
 
 ```bash
@@ -77,14 +88,37 @@ Izvedite migracije:
 dotnet ef database update --project backend/StrojniNalog.Api.csproj -- --environment Development
 ```
 
-Ukaz ustvari tabele in doda začetne vrste storitev ter stroje. Ponovno izvajanje ne podvoji nespremenjenih začetnih podatkov.
+Ukaz ustvari tabele in doda začetne vrste storitev ter stroje.
 
-### 5. Zagon backenda
+### 5. Priprava Keycloaka
+Skrbniška konzola je dostopna na [http://localhost:8080](http://localhost:8080). Če je `KEYCLOAK_PORT` spremenjen, uporabite nastavljeni port.
+
+Ob prvi pripravi:
+1. Prijavite se z vrednostma `KEYCLOAK_ADMIN` in `KEYCLOAK_ADMIN_PASSWORD` iz `.env`.
+2. V realmu `master` ustvarite trajnega skrbnika, nastavite geslo z izključeno možnostjo `Temporary` in mu dodelite realm vlogo `admin`.
+3. Preverite prijavo novega skrbnika in nato odstranite začasnega.
+
+Realm `strojninalog` se ob prvem zagonu uvozi iz `docker/keycloak/strojninalog-realm.json`. Če že obstaja, se uvoz preskoči. Spremembe datoteke zato ne posodobijo obstoječega realma.
+
+Realm vsebuje poslovne vloge, nastavitve registracije ter odjemalca `strojninalog-frontend` in `strojninalog-api`.
+
+Uporabniki niso vključeni v izvoz. Naročniki se registrirajo sami in dobijo poslovno vlogo `narocnik`.
+
+Račune zaposlenih v realmu `strojninalog` pripravi skrbnik:
+- ustvari uporabnika ter vnese ime, priimek in e-pošto;
+- odstrani dodelitev `default-roles-strojninalog` in morebitno neposredno vlogo `narocnik`;
+- dodeli eno poslovno vlogo: `organizator` ali `izvajalec`;
+- dodeli client vlogi `manage-account` in `view-profile` odjemalca `account`;
+- nastavi geslo in izklopi možnost `Temporary`.
+
+Gesla se nastavijo lokalno in se ne vključujejo v Git.
+
+### 6. Zagon backenda
 ```bash
 dotnet run --project backend/StrojniNalog.Api.csproj
 ```
 
-### 6. Zagon frontenda
+### 7. Zagon frontenda
 V drugem terminalu odprite mapo `frontend` in izvedite:
 
 ```bash
