@@ -56,12 +56,6 @@ Zaženite Docker in izvedite:
 docker compose up -d
 ```
 
-Pred izvajanjem migracij počakajte, da je PostgreSQL pripravljen. Stanje preverite z:
-
-```bash
-docker compose ps
-```
-
 Storitev `keycloak-db-init` pripravi bazo in uporabnika Keycloaka.
 
 ### 3. Povezava backenda z bazo
@@ -72,8 +66,6 @@ dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Host=localhost;Po
 ```
 
 `TVOJE_GESLO` zamenjajte z vrednostjo `POSTGRES_PASSWORD` iz `.env`. Če uporabljate drug port ali uporabnika, prilagodite tudi `Port` in `Username`.
-
-Backend pri neposrednem lokalnem zagonu datoteke `.env` ne bere samodejno.
 
 ### 4. Priprava poslovne baze
 Namestite orodje dotnet-ef 10, če še ni nameščeno:
@@ -126,7 +118,6 @@ npm ci
 npm run dev
 ```
 
-## Trenutno stanje
-Pripravljeni so osnova frontenda in backenda, poslovna baza, migracije ter začetni podatki.
-
-Docker Compose trenutno zaganja PostgreSQL. Skupni zagon vseh storitev, Keycloak in poslovne funkcionalnosti sledijo v nadaljnjih razvojnih nalogah.
+Pred prvim zagonom kopirajte `frontend/.env.example` v `frontend/.env`.
+Preverite naslov API-ja ter URL, realm in Client ID Keycloaka.
+`VITE_API_URL` mora ustrezati naslovu lokalnega backenda.
