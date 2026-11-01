@@ -1,18 +1,52 @@
+@import "./theme.css";
+
 :root {
-  font-family: system-ui, sans-serif;
-  color: #1f2937;
-  background-color: #f8fafc;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  background-color: var(--color-background);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+a {
+  color: var(--color-primary);
+  text-underline-offset: 0.2em;
 }
 
 button,
@@ -22,25 +56,33 @@ textarea {
   font: inherit;
 }
 
-.app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+img,
+svg {
+  max-width: 100%;
 }
 
 .auth-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.app-navigation {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.app-navigation a.active {
-  font-weight: 700;
+@media (max-width: 640px) {
+  .app {
+    padding: var(--space-4);
+  }
 }

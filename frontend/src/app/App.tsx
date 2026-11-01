@@ -1,13 +1,11 @@
-import { AppNavigation } from '../components/layout/AppNavigation'
+import { AppLayout } from '../components/layout/AppLayout'
 import { AppRoutes } from './AppRoutes'
 
 function App() {
   return (
-    <main className="app">
-      <h1>StrojniNalog</h1>
-      <AppNavigation />
+    <AppLayout>
       <AppRoutes />
-    </main>
+    </AppLayout>
   )
 }
 
