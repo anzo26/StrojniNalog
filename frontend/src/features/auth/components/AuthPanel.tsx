@@ -2,16 +2,13 @@ import { useState } from 'react'
 import { Button } from '../../../components/ui/Button'
 import { Card } from '../../../components/ui/Card'
 import { useAuth } from '../../../hooks/useAuth'
-import { userRoleLabels } from '../models/authUser'
 import './AuthPanel.css'
+import { UserProfileCard } from './UserProfileCard'
 
 export function AuthPanel() {
   const { user, login, register } = useAuth()
   const [pending, setPending] = useState<'login' | 'register' | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const displayName = user
-    ? `${user.firstName} ${user.lastName}`.trim() || user.username
-    : ''
 
   async function handleAction(action: 'login' | 'register') {
     setPending(action)
@@ -36,26 +33,7 @@ export function AuthPanel() {
         </p>
       </div>
       {user ? (
-        <Card aria-labelledby="account-name">
-          <h2 id="account-name">{displayName}</h2>
-          <dl className="account-details">
-            <div>
-              <dt>Uporabniško ime</dt>
-              <dd>{user.username}</dd>
-            </div>
-            <div>
-              <dt>E-pošta</dt>
-              <dd>{user.email || 'Ni navedena'}</dd>
-            </div>
-            <div>
-              <dt>Vloga</dt>
-              <dd>
-                {user.roles.map(role => userRoleLabels[role]).join(', ')
-                  || 'Brez poslovne vloge'}
-              </dd>
-            </div>
-          </dl>
-        </Card>
+        <UserProfileCard key={user.authId} username={user.username} />
       ) : (
         <Card aria-labelledby="account-login-title">
           <h2 id="account-login-title">Dostop do aplikacije</h2>
