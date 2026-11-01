@@ -27,3 +27,20 @@ textarea {
   margin: 0 auto;
   padding: 2rem;
 }
+
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.app-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-navigation a.active {
+  font-weight: 700;
+}
