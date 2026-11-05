@@ -3,6 +3,7 @@ import { AuthPanel } from '../features/auth/components/AuthPanel'
 import { ProtectedRoute } from '../features/auth/components/ProtectedRoute'
 import { NarocilaPage } from '../features/narocila/pages/NarocilaPage'
 import { DelovniNalogiPage } from '../features/delovni-nalogi/pages/DelovniNalogiPage'
+import { NovoNarociloPage } from '../features/narocila/pages/NovoNarociloPage'
 
 export function AppRoutes() {
   return (
@@ -13,6 +14,9 @@ export function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['organizator', 'izvajalec']} />}>
         <Route path="/delovni-nalogi" element={<DelovniNalogiPage />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['narocnik']} />}>
+        <Route path="/narocila/novo" element={<NovoNarociloPage />} />
       </Route>
       <Route path="*" element={<h2>Stran ne obstaja</h2>} />
     </Routes>
