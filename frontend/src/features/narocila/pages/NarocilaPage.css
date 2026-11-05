@@ -1,0 +1,16 @@
+.narocila-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.narocila-heading h1 {
+  margin: 0;
+}
+
+.narocila-heading .button {
+  text-decoration: none;
+}

@@ -1,0 +1,20 @@
+.novo-narocilo-page {
+  max-width: 800px;
+}
+
+.novo-narocilo-heading {
+  margin-bottom: var(--space-6);
+}
+
+.novo-narocilo-heading h1 {
+  margin-bottom: var(--space-2);
+}
+
+.novo-narocilo-heading p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.novo-narocilo-page .card > .narocilo-form-actions {
+  margin-top: var(--space-5);
+}

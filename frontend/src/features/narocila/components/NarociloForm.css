@@ -1,0 +1,49 @@
+.narocilo-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.narocilo-fields {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.narocilo-legend {
+  margin-bottom: var(--space-5);
+  padding: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.narocilo-submit-error {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-small);
+  background: var(--color-danger-background);
+  color: var(--color-danger);
+}
+
+.narocilo-form-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.narocilo-form-actions p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .narocilo-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
