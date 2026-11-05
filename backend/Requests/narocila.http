@@ -1,0 +1,23 @@
+@baseUrl = http://localhost:5176
+@vrstaStoritveId = 1
+
+### Aktivne storitve
+# @prompt accessToken Prilepi dostopni žeton naročnika
+GET {{baseUrl}}/api/vrste-storitev/aktivne
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Oddaja naročila 
+# @prompt accessToken Prilepi dostopni žeton naročnika
+POST {{baseUrl}}/api/narocila
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "vrstaStoritveId": {{vrstaStoritveId}},
+  "opisDela": "Izkop za pripravo temeljev garaže.",
+  "lokacija": "Gorišnica",
+  "zeleniTermin": "2026-11-10T08:00:00+01:00"
+}
+
