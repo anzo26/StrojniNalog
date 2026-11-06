@@ -1,0 +1,46 @@
+.narocilo-podrobnosti {
+  display: grid;
+  gap: 24px;
+}
+
+.narocilo-podrobnosti__back {
+  justify-self: start;
+}
+
+.narocilo-podrobnosti__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.narocilo-podrobnosti__heading h1 {
+  margin: 0;
+}
+
+.narocilo-podrobnosti__panel {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.narocilo-podrobnosti__panel p {
+  margin: 0;
+}
+
+.narocilo-podrobnosti__error {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  color: #991b1b;
+}
+
+.narocilo-podrobnosti__success {
+  padding: 16px 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #166534;
+}

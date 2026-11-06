@@ -121,3 +121,15 @@ npm run dev
 Pred prvim zagonom kopirajte `frontend/.env.example` v `frontend/.env`.
 Preverite naslov API-ja ter URL, realm in Client ID Keycloaka.
 `VITE_API_URL` mora ustrezati naslovu lokalnega backenda.
+
+
+## Trenutno stanje
+
+Implementirani so prijava prek Keycloaka, preverjanje uporabniških vlog
+in oddaja naročila.
+
+Naročnik lahko pregleduje svoja naročila in njihove podrobnosti.
+Organizator lahko pregleduje vsa naročila ter potrdi ali z navedbo razloga zavrne naročila v stanju ODDANO.
+
+Docker Compose zaganja PostgreSQL in Keycloak.
+Backend in frontend se trenutno zaganjata lokalno.

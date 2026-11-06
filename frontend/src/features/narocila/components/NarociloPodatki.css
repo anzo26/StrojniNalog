@@ -1,0 +1,43 @@
+.narocilo-podatki {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+}
+
+.narocilo-podatki dt {
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.narocilo-podatki dd {
+  margin: 0;
+  color: #0f172a;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.narocilo-podatki__wide {
+  grid-column: 1 / -1;
+}
+
+.narocilo-podatki__zavrnitev {
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+}
+
+.narocilo-podatki__zavrnitev dt,
+.narocilo-podatki__zavrnitev dd {
+  color: #991b1b;
+}
+
+@media (max-width: 640px) {
+  .narocilo-podatki {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
