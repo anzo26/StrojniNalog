@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StrojniNalog.Api.Data;
+using StrojniNalog.Api.DTO.Narocila;
 using StrojniNalog.Api.DTOs.Narocila;
 using StrojniNalog.Api.DTOs.Storitve;
 using StrojniNalog.Api.Models;
@@ -24,7 +25,7 @@ public class NarociloBll(AppDbContext context)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<OddanoNarociloDto?> OddajAsync(UstvariNarociloDto dto,int narocnikId,CancellationToken cancellationToken = default)
+    public async Task<OddanoNarociloDto?> OddajAsync(UstvariNarociloDto dto, int narocnikId, CancellationToken cancellationToken = default)
     {
         var termin = dto.ZeleniTermin ?? throw new ArgumentException("Želeni termin mora biti podan.", nameof(dto));
 
@@ -51,8 +52,86 @@ public class NarociloBll(AppDbContext context)
         return new OddanoNarociloDto
         {
             Id = narocilo.Id,
-            Status = narocilo.Status.ToString().ToUpperInvariant(),
+            Status = narocilo.Status,
             DatumOddaje = narocilo.DatumOddaje
         };
+    }
+
+    public async Task<List<NarociloSeznamDto>> PridobiSeznamAsync(int uporabnikId,bool jeOrganizator,CancellationToken cancellationToken = default)
+    {
+        return await DostopnaNarocila(uporabnikId, jeOrganizator)
+            .OrderByDescending(x => x.DatumOddaje)
+            .ThenByDescending(x => x.Id)
+            .Select(x => new NarociloSeznamDto
+            {
+                Id = x.Id,
+                Narocnik = (x.Narocnik.Ime + " " + x.Narocnik.Priimek).Trim(),
+                VrstaStoritve = x.VrstaStoritve.Naziv,
+                ZeleniTermin = x.ZeleniTermin,
+                DatumOddaje = x.DatumOddaje,
+                Status = x.Status
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<NarociloPodrobnostiDto?> PridobiPodrobnostiAsync(int narociloId,int uporabnikId,bool jeOrganizator,CancellationToken cancellationToken = default)
+    {
+        return await DostopnaNarocila(uporabnikId, jeOrganizator)
+            .Where(x => x.Id == narociloId)
+            .Select(x => new NarociloPodrobnostiDto
+            {
+                Id = x.Id,
+                NarocnikId = x.NarocnikId,
+                Narocnik = (x.Narocnik.Ime + " " + x.Narocnik.Priimek).Trim(),
+                VrstaStoritveId = x.VrstaStoritveId,
+                VrstaStoritve = x.VrstaStoritve.Naziv,
+                OpisDela = x.OpisDela,
+                Lokacija = x.Lokacija,
+                ZeleniTermin = x.ZeleniTermin,
+                DatumOddaje = x.DatumOddaje,
+                Status = x.Status,
+                RazlogZavrnitve = x.RazlogZavrnitve
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    private IQueryable<Narocilo> DostopnaNarocila(int uporabnikId, bool jeOrganizator)
+    {
+        return context.Narocila
+            .AsNoTracking()
+            .Where(x => jeOrganizator || x.NarocnikId == uporabnikId);
+    }
+
+    public Task<ObravnavaNarocilaRezultat> PotrdiAsync(int narociloId,CancellationToken cancellationToken = default)
+    {
+        return ObravnavaAsync(
+            narociloId, StatusNarocila.Potrjeno, null, cancellationToken);
+    }
+
+    public Task<ObravnavaNarocilaRezultat> ZavrniAsync(int narociloId,ZavrniNarociloDto dto,CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Razlog))
+            return Task.FromResult(ObravnavaNarocilaRezultat.NeveljavenRazlog);
+
+        return ObravnavaAsync(
+            narociloId, StatusNarocila.Zavrnjeno, dto.Razlog.Trim(), cancellationToken);
+    }
+
+    private async Task<ObravnavaNarocilaRezultat> ObravnavaAsync(int narociloId,StatusNarocila noviStatus,string? razlog, CancellationToken cancellationToken)
+    {
+        var spremenjeno = await context.Narocila
+            .Where(x => x.Id == narociloId && x.Status == StatusNarocila.Oddano)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(x => x.Status, noviStatus)
+                .SetProperty(x => x.RazlogZavrnitve, razlog),
+                cancellationToken);
+
+        if (spremenjeno == 1)
+            return ObravnavaNarocilaRezultat.Uspeh;
+
+        var obstaja = await context.Narocila
+            .AnyAsync(x => x.Id == narociloId, cancellationToken);
+
+        return obstaja ? ObravnavaNarocilaRezultat.NapacnoStanje : ObravnavaNarocilaRezultat.NeObstaja;
     }
 }

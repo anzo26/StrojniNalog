@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StrojniNalog.Api.DTO.Uporabniki;
+using StrojniNalog.Api.Extensions;
 using StrojniNalog.Api.Models;
 using StrojniNalog.Api.Security;
 
@@ -15,10 +16,7 @@ public class UporabnikiController : ControllerBase
     [HttpGet("me")]
     public ActionResult<UporabnikProfilDto> MojProfil()
     {
-        if (HttpContext.Items[typeof(Uporabnik)] is not Uporabnik uporabnik)
-            return Problem(
-                detail: "Profil overjenega uporabnika ni bil pripravljen.",
-                statusCode: StatusCodes.Status500InternalServerError);
+       var uporabnik = HttpContext.PridobiUporabnika();
 
         return Ok(new UporabnikProfilDto
         {
