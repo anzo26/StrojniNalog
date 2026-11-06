@@ -21,3 +21,24 @@ Accept: application/json
   "zeleniTermin": "2026-11-10T08:00:00+01:00"
 }
 
+### Seznam dostopnih naročil
+# @prompt accessToken
+GET {{baseUrl}}/api/narocila
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+
+### Potrditev naročila - organizator
+# @prompt accessToken
+POST {{baseUrl}}/api/narocila/1/potrditev
+Authorization: Bearer {{accessToken}}
+
+### Zavrnitev naročila
+# @prompt accessToken
+POST {{baseUrl}}/api/narocila/2/zavrnitev
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "razlog": "Za želeni termin nimamo razpoložljive mehanizacije."
+}
