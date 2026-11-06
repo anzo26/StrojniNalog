@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StrojniNalog.Api.Bll;
 using StrojniNalog.Api.Data;
+using StrojniNalog.Api.ExceptionHandlers;
 using StrojniNalog.Api.Extensions;
 using StrojniNalog.Api.Middleware;
 using System.Text.Json;
@@ -24,8 +25,15 @@ builder.Services.AddKeycloakAuthentication(builder.Configuration, builder.Enviro
 builder.Services.AddFrontendCors(builder.Configuration);
 
 builder.Services.AddScoped<NarociloBll>();
+builder.Services.AddScoped<StrojBll>();
+builder.Services.AddScoped<IzvajalecBll>();
+builder.Services.AddScoped<DelovniNalogBll>();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<KeycloakExceptionHandler>();
+builder.Services.AddKeycloakAdmin(builder.Configuration);
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

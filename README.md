@@ -105,7 +105,61 @@ Račune zaposlenih v realmu `strojninalog` pripravi skrbnik:
 
 Gesla se nastavijo lokalno in se ne vključujejo v Git.
 
+### Servisni dostop backenda do Keycloaka
+
+Backend uporablja Keycloak Admin API za pridobivanje izvajalcev in
+preverjanje njihove vloge pri pripravi delovnega naloga.
+
+V realmu `strojninalog` mora obstajati odjemalec
+`strojninalog-admin-reader`. Če ga uvoženi realm še ne vsebuje,
+ga ustvarite prek `Clients → Create client`.
+
+Nastavitve odjemalca:
+- Client type: `OpenID Connect`;
+- Client authentication: vključeno;
+- Service accounts roles: vključeno;
+- Authorization: izključeno;
+- Standard flow, Direct access grants in ostali prijavni tokovi: izključeni.
+
+V zavihku `Service account roles` dodelite naslednje vloge
+odjemalca `realm-management`:
+- `query-users`;
+- `view-users`;
+- `view-realm`.
+
+Odprite `Client scopes → strojninalog-admin-reader-dedicated → Scope`.
+Izključite `Full scope allowed` in med dovoljene vloge dodajte
+iste tri vloge odjemalca `realm-management`.
+
+Nastavitve lokalne povezave so v `backend/appsettings.Development.json`:
+
+```json
+"KeycloakAdmin": {
+  "BaseUrl": "http://localhost:8080",
+  "Realm": "strojninalog",
+  "ClientId": "strojninalog-admin-reader"
+}
+```
+
+Če uporabljate drug port Keycloaka, prilagodite `BaseUrl`.
+
+V zavihku `Credentials` kopirajte trenutni `Client secret` in ga
+iz korenske mape repozitorija shranite v .NET User Secrets:
+
+```bash
+dotnet user-secrets set 'KeycloakAdmin:ClientSecret' 'TVOJ_CLIENT_SECRET' --project backend/StrojniNalog.Api.csproj
+```
+
+`TVOJ_CLIENT_SECRET` zamenjajte z dejansko vrednostjo.
+Skrivnost se ne vključuje v Git ali frontend.
+
+Nastavitve pripravite pred zagonom backenda.
+Po spremembi skrivnosti backend ponovno zaženite.
+
 ### 6. Zagon backenda
+Pred zagonom pripravite servisni dostop do Keycloaka po navodilih
+v razdelku »Servisni dostop backenda do Keycloaka«.
+
 ```bash
 dotnet run --project backend/StrojniNalog.Api.csproj
 ```
@@ -125,11 +179,19 @@ Preverite naslov API-ja ter URL, realm in Client ID Keycloaka.
 
 ## Trenutno stanje
 
-Implementirani so prijava prek Keycloaka, preverjanje uporabniških vlog
-in oddaja naročila.
+Implementirani so prijava prek Keycloaka, preverjanje uporabniških
+vlog, oddaja naročila ter pregled in obravnava naročil.
 
-Naročnik lahko pregleduje svoja naročila in njihove podrobnosti.
-Organizator lahko pregleduje vsa naročila ter potrdi ali z navedbo razloga zavrne naročila v stanju ODDANO.
+Naročnik pregleduje svoja naročila, organizator pa vsa.
+Organizator lahko potrdi ali z obveznim razlogom zavrne naročilo
+v stanju ODDANO.
+
+API omogoča pripravo delovnega naloga za potrjeno naročilo.
+Preverja razpoložljivost stroja, aktivnost in vlogo izvajalca,
+veljavnost termina ter preprečuje več nalogov za isto naročilo.
+
+Obrazec za pripravo delovnega naloga in preverjanje časovnih
+prekrivanj sledita v nadaljnjih nalogah.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.

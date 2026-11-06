@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:5176
+
+### Seznam izvajalcev
+# @prompt accessToken
+GET {{baseUrl}}/api/izvajalci
+Authorization: Bearer {{accessToken}}
+Accept: application/json
