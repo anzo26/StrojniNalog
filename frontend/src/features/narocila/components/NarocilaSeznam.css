@@ -1,0 +1,64 @@
+.narocila-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.narocila-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.narocila-table th,
+.narocila-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.narocila-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.narocila-table tbody th {
+  color: #0f172a;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.narocila-table tbody td {
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.narocila-table tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.narocila-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.narocila-table__link {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.narocila-table__link:hover {
+  color: #1e3a8a;
+}
+
+.narocila-table__row {
+  cursor: pointer;
+}
+
+.narocila-table__row:focus-within {
+  background: #f1f5f9;
+}

@@ -1,0 +1,40 @@
+.obravnava-narocila {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.obravnava-narocila h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.15rem;
+}
+
+.obravnava-narocila__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.obravnava-narocila__error {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+}
+
+.obravnava-narocila__error p {
+  margin: 0;
+}
+
+.zavrnitev-narocila-form {
+  display: grid;
+  gap: 20px;
+}
