@@ -1,0 +1,17 @@
+@keycloakUrl = http://localhost:8080
+@realm = strojninalog
+@clientId = strojninalog-admin-reader
+
+### Pridobitev žetona servisnega računa
+# @name servisniZeton
+# @prompt clientSecret Vnesite Client secret servisnega odjemalca
+POST {{keycloakUrl}}/realms/{{realm}}/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials&client_id={{clientId}}&client_secret={{clientSecret}}
+
+### Prva stran uporabnikov z vlogo izvajalca
+GET {{keycloakUrl}}/admin/realms/{{realm}}/roles/izvajalec/users
+Authorization: Bearer {{servisniZeton.response.body.$.access_token}}
+Accept: application/json
+

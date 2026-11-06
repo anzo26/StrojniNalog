@@ -1,0 +1,15 @@
+@baseUrl = http://localhost:5176
+
+### Priprava delovnega naloga
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "narociloId": 1,
+  "strojId": 1,
+  "izvajalecId": 3,
+  "predvideniZacetek": "2026-11-10T08:00:00+01:00",
+  "predvideniKonec": "2026-11-10T08:00:00+01:00"
+}

@@ -1,0 +1,7 @@
+@baseUrl = http://localhost:5176
+
+### Razpoložljivi stroji
+# @prompt accessToken
+GET {{baseUrl}}/api/stroji/razpolozljivi
+Authorization: Bearer {{accessToken}}
+Accept: application/json

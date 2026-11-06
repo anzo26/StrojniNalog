@@ -8,15 +8,27 @@ namespace StrojniNalog.Api.Bll;
 
 public class UporabnikBll(AppDbContext context)
 {
-    public async Task<Uporabnik> PridobiAliUstvariAsync(
-        ClaimsPrincipal principal,
-        CancellationToken cancellationToken = default)
+    public Task<Uporabnik> PridobiAliUstvariAsync(ClaimsPrincipal principal,CancellationToken cancellationToken = default)
     {
         var authId = principal.FindFirstValue("sub");
+
         if (principal.Identity?.IsAuthenticated != true || string.IsNullOrWhiteSpace(authId))
             throw new UnauthorizedAccessException("Manjka overjena identiteta uporabnika.");
 
-        var obstojeci = await context.Uporabniki.SingleOrDefaultAsync(x => x.AuthId == authId, cancellationToken);
+        return PridobiAliUstvariAsync(
+            authId,
+            principal.FindFirstValue("given_name"),
+            principal.FindFirstValue("family_name"),
+            principal.FindFirstValue("email"),
+            cancellationToken);
+    }
+
+    public async Task<Uporabnik> PridobiAliUstvariAsync(string authId,string? ime,string? priimek,string? email,CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authId);
+
+        var obstojeci = await context.Uporabniki
+            .SingleOrDefaultAsync(x => x.AuthId == authId, cancellationToken);
 
         if (obstojeci is not null)
             return obstojeci;
@@ -24,9 +36,9 @@ public class UporabnikBll(AppDbContext context)
         var uporabnik = new Uporabnik
         {
             AuthId = authId,
-            Ime = principal.FindFirstValue("given_name") ?? string.Empty,
-            Priimek = principal.FindFirstValue("family_name") ?? string.Empty,
-            Email = principal.FindFirstValue("email") ?? string.Empty
+            Ime = ime ?? string.Empty,
+            Priimek = priimek ?? string.Empty,
+            Email = email ?? string.Empty
         };
 
         context.Uporabniki.Add(uporabnik);
@@ -44,6 +56,7 @@ public class UporabnikBll(AppDbContext context)
             })
         {
             context.Entry(uporabnik).State = EntityState.Detached;
+
             return await context.Uporabniki
                 .SingleAsync(x => x.AuthId == authId, cancellationToken);
         }
