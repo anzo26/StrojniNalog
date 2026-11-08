@@ -190,8 +190,11 @@ API omogoča pripravo delovnega naloga za potrjeno naročilo.
 Preverja razpoložljivost stroja, aktivnost in vlogo izvajalca,
 veljavnost termina ter preprečuje več nalogov za isto naročilo.
 
-Obrazec za pripravo delovnega naloga in preverjanje časovnih
-prekrivanj sledita v nadaljnjih nalogah.
+Organizator lahko prek obrazca za potrjeno naročilo pripravi
+delovni nalog z izbiro stroja, izvajalca in predvidenega termina.
+Po ustvarjanju lahko pregleduje nalog in njegov status.
+
+Preverjanje časovnih prekrivanj strojev in izvajalcev sledi v US-04.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.

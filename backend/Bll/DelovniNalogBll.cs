@@ -86,4 +86,24 @@ public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll)
                 Status = nalog.Status
             });
     }
+
+    public async Task<DelovniNalogPodrobnostiDto?> PridobiPodrobnostiAsync(int id,CancellationToken cancellationToken = default)
+{
+    return await context.DelovniNalogi
+        .AsNoTracking()
+        .Where(x => x.Id == id)
+        .Select(x => new DelovniNalogPodrobnostiDto
+        {
+            Id = x.Id,
+            NarociloId = x.NarociloId,
+            StrojId = x.StrojId,
+            Stroj = x.Stroj.Oznaka + " – " + x.Stroj.Naziv,
+            IzvajalecId = x.IzvajalecId,
+            Izvajalec = (x.Izvajalec.Ime + " " + x.Izvajalec.Priimek).Trim(),
+            PredvideniZacetek = x.PredvideniZacetek,
+            PredvideniKonec = x.PredvideniKonec,
+            Status = x.Status
+        })
+        .SingleOrDefaultAsync(cancellationToken);
+}
 }

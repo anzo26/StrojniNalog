@@ -9,4 +9,5 @@ public class NarociloPodrobnostiDto : NarociloSeznamDto
     public string OpisDela { get; init; } = string.Empty;
     public string Lokacija { get; init; } = string.Empty;
     public string? RazlogZavrnitve { get; init; }
+    public int? DelovniNalogId { get; init; }
 }

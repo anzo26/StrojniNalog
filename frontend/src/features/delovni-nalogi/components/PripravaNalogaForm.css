@@ -1,0 +1,47 @@
+.priprava-naloga-form {
+  display: grid;
+  gap: 20px;
+}
+
+.priprava-naloga-form fieldset {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.priprava-naloga-form__termin {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.priprava-naloga-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.priprava-naloga-form__hint {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.priprava-naloga-form__error {
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .priprava-naloga-form__termin {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

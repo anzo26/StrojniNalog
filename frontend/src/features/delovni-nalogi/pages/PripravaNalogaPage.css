@@ -1,0 +1,79 @@
+.priprava-naloga-page {
+  display: grid;
+  gap: 24px;
+}
+
+.priprava-naloga__back {
+  justify-self: start;
+}
+
+.priprava-naloga__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.priprava-naloga__heading h1 {
+  margin: 0;
+}
+
+.priprava-naloga__heading p {
+  margin: 8px 0 0;
+  color: #64748b;
+}
+
+.priprava-naloga__layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.priprava-naloga__panel {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+  min-width: 0;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.priprava-naloga__panel > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.priprava-naloga__panel h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.15rem;
+}
+
+.priprava-naloga__panel p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.priprava-naloga__panel form {
+  width: 100%;
+}
+
+.priprava-naloga__povzetek .narocilo-podatki {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.priprava-naloga__message {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .priprava-naloga__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

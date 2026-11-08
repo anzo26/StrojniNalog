@@ -45,3 +45,11 @@
 .button:disabled {
   opacity: 0.6;
 }
+
+a.button,
+a.button:visited,
+a.button:hover,
+a.button:focus,
+a.button:active {
+  text-decoration: none;
+}

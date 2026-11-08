@@ -1,0 +1,65 @@
+.nalog-podrobnosti {
+  display: grid;
+  gap: 24px;
+}
+
+.nalog-podrobnosti__back {
+  justify-self: start;
+}
+
+.nalog-podrobnosti__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.nalog-podrobnosti__heading h1 {
+  margin: 0;
+}
+
+.nalog-podrobnosti__panel {
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.nalog-podrobnosti__panel p {
+  margin: 0;
+}
+
+.nalog-podrobnosti__podatki {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+}
+
+.nalog-podrobnosti__podatki dt {
+  margin-bottom: 6px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.nalog-podrobnosti__podatki dd {
+  margin: 0;
+  color: #0f172a;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.nalog-podrobnosti__error {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  color: #991b1b;
+}
+
+@media (max-width: 640px) {
+  .nalog-podrobnosti__podatki {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

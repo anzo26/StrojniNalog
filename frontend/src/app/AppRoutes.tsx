@@ -5,6 +5,8 @@ import { NarocilaPage } from '../features/narocila/pages/NarocilaPage'
 import { DelovniNalogiPage } from '../features/delovni-nalogi/pages/DelovniNalogiPage'
 import { NovoNarociloPage } from '../features/narocila/pages/NovoNarociloPage'
 import { NarociloPodrobnostiPage } from '../features/narocila/pages/NarociloPodrobnostiPage'
+import { PripravaNalogaPage } from '../features/delovni-nalogi/pages/PripravaNalogaPage'
+import { DelovniNalogPodrobnostiPage } from '../features/delovni-nalogi/pages/DelovniNalogPodrobnostiPage'
 
 export function AppRoutes() {
   return (
@@ -19,6 +21,10 @@ export function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['narocnik']} />}>
         <Route path="/narocila/novo" element={<NovoNarociloPage />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['organizator']} />}>
+        <Route path="/narocila/:id/delovni-nalog/novo" element={<PripravaNalogaPage />} />
+        <Route path="/delovni-nalogi/:id" element={<DelovniNalogPodrobnostiPage />} />
       </Route>
       <Route path="*" element={<h2>Stran ne obstaja</h2>} />
     </Routes>

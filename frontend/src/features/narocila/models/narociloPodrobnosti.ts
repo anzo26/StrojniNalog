@@ -6,4 +6,5 @@ export interface NarociloPodrobnosti extends NarociloSeznam {
   opisDela: string;
   lokacija: string;
   razlogZavrnitve: string | null;
+  delovniNalogId: number | null;
 }

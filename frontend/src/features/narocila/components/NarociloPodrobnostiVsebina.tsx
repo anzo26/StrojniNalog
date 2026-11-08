@@ -51,9 +51,33 @@ export function NarociloPodrobnostiVsebina({ id }: NarociloPodrobnostiVsebinaPro
                         </button>
                     </div>
                 )}
-
                 {!nalaganje && !napaka && narocilo && (
-                    <NarociloPodatki narocilo={narocilo} prikaziNarocnika={jeOrganizator} />
+                    <>
+                        <NarociloPodatki narocilo={narocilo} prikaziNarocnika={jeOrganizator} />
+
+                        {jeOrganizator && (
+                            <div className="narocilo-podrobnosti__actions">
+                                {narocilo.status === StatusNarocila.Potrjeno &&
+                                    narocilo.delovniNalogId === null && (
+                                        <Link
+                                            to={`/narocila/${id}/delovni-nalog/novo`}
+                                            className="button button--primary"
+                                        >
+                                            Pripravi delovni nalog
+                                        </Link>
+                                    )}
+
+                                {narocilo.delovniNalogId != null && (
+                                    <Link
+                                        to={`/delovni-nalogi/${narocilo.delovniNalogId}`}
+                                        className="button button--primary"
+                                    >
+                                        Preglej delovni nalog
+                                    </Link>
+                                )}
+                            </div>
+                        )}
+                    </>
                 )}
             </section>
             {!nalaganje && !napaka && jeOrganizator && narocilo?.status === StatusNarocila.Oddano && (
