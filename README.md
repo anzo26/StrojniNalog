@@ -194,7 +194,12 @@ Organizator lahko prek obrazca za potrjeno naročilo pripravi
 delovni nalog z izbiro stroja, izvajalca in predvidenega termina.
 Po ustvarjanju lahko pregleduje nalog in njegov status.
 
-Preverjanje časovnih prekrivanj strojev in izvajalcev sledi v US-04.
+Obrazec ob konfliktu prikaže, ali je zaseden stroj, izvajalec
+ali oba. Vneseni podatki ostanejo ohranjeni.
+
+Ponovna oddaja je omogočena po spremembi termina, stroja ali
+izvajalca. Backend pri novem poskusu ponovno preveri zasedenost.
+Potrditev ustvarjenega naloga se prikaže šele po uspešnem shranjevanju.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.
