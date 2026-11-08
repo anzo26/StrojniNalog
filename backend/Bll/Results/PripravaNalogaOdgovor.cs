@@ -5,4 +5,5 @@ namespace StrojniNalog.Api.Bll.Results;
 
 public record PripravaNalogaOdgovor(
     PripravaNalogaRezultat Rezultat,
-    PripravljenDelovniNalogDto? Nalog = null);
+    PripravljenDelovniNalogDto? Nalog = null,
+    ZasedenostTermina? Zasedenost = null);

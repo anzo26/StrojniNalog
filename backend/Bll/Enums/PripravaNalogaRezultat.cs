@@ -8,5 +8,6 @@ public enum PripravaNalogaRezultat
     NalogZeObstaja,
     NeveljavenStroj,
     NeveljavenIzvajalec,
-    NeveljavenTermin
+    NeveljavenTermin,
+    TerminZaseden
 }

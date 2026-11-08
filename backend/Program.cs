@@ -28,6 +28,7 @@ builder.Services.AddScoped<NarociloBll>();
 builder.Services.AddScoped<StrojBll>();
 builder.Services.AddScoped<IzvajalecBll>();
 builder.Services.AddScoped<DelovniNalogBll>();
+builder.Services.AddScoped<ZasedenostBll>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<KeycloakExceptionHandler>();
 builder.Services.AddKeycloakAdmin(builder.Configuration);

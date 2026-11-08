@@ -9,9 +9,9 @@ using StrojniNalog.Api.Models.Enums;
 
 namespace StrojniNalog.Api.Bll;
 
-public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll)
+public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll, ZasedenostBll zasedenostBll)
 {
-    public async Task<PripravaNalogaOdgovor> PripraviAsync(PripraviDelovniNalogDto dto,CancellationToken cancellationToken = default)
+    public async Task<PripravaNalogaOdgovor> PripraviAsync(PripraviDelovniNalogDto dto, CancellationToken cancellationToken = default)
     {
         if (dto.PredvideniZacetek is not DateTimeOffset zacetek ||
             dto.PredvideniKonec is not DateTimeOffset konec ||
@@ -51,6 +51,16 @@ public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll)
         if (!jeIzvajalec)
             return new(PripravaNalogaRezultat.NeveljavenIzvajalec);
 
+        var zasedenost = await zasedenostBll.PreveriAsync(
+            dto.StrojId,
+            dto.IzvajalecId,
+            zacetek.UtcDateTime,
+            konec.UtcDateTime,
+            cancellationToken);
+
+        if (zasedenost.JeZaseden)
+            return new(PripravaNalogaRezultat.TerminZaseden, Zasedenost: zasedenost);
+
         var nalog = new DelovniNalog
         {
             NarociloId = dto.NarociloId,
@@ -61,49 +71,96 @@ public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll)
             Status = StatusDelovnegaNaloga.Nacrtovan
         };
 
-        context.DelovniNalogi.Add(nalog);
-
-        try
-        {
-            await context.SaveChangesAsync(cancellationToken);
-        }
-        catch (DbUpdateException ex) when (
-            ex.InnerException is PostgresException
-            {
-                SqlState: PostgresErrorCodes.UniqueViolation,
-                ConstraintName: "IX_DelovniNalogi_NarociloId"
-            })
-        {
-            context.Entry(nalog).State = EntityState.Detached;
-            return new(PripravaNalogaRezultat.NalogZeObstaja);
-        }
-
-        return new(
-            PripravaNalogaRezultat.Uspeh,
-            new PripravljenDelovniNalogDto
-            {
-                Id = nalog.Id,
-                Status = nalog.Status
-            });
+        return await ShraniAsync(nalog, cancellationToken);
     }
 
-    public async Task<DelovniNalogPodrobnostiDto?> PridobiPodrobnostiAsync(int id,CancellationToken cancellationToken = default)
-{
-    return await context.DelovniNalogi
-        .AsNoTracking()
-        .Where(x => x.Id == id)
-        .Select(x => new DelovniNalogPodrobnostiDto
+    public async Task<DelovniNalogPodrobnostiDto?> PridobiPodrobnostiAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await context.DelovniNalogi
+            .AsNoTracking()
+            .Where(x => x.Id == id)
+            .Select(x => new DelovniNalogPodrobnostiDto
+            {
+                Id = x.Id,
+                NarociloId = x.NarociloId,
+                StrojId = x.StrojId,
+                Stroj = x.Stroj.Oznaka + " – " + x.Stroj.Naziv,
+                IzvajalecId = x.IzvajalecId,
+                Izvajalec = (x.Izvajalec.Ime + " " + x.Izvajalec.Priimek).Trim(),
+                PredvideniZacetek = x.PredvideniZacetek,
+                PredvideniKonec = x.PredvideniKonec,
+                Status = x.Status
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    private async Task<PripravaNalogaOdgovor> ShraniAsync(DelovniNalog nalog,CancellationToken cancellationToken)
+    {
+        context.DelovniNalogi.Add(nalog);
+
+        for (var poskus = 0; poskus < 2; poskus++)
         {
-            Id = x.Id,
-            NarociloId = x.NarociloId,
-            StrojId = x.StrojId,
-            Stroj = x.Stroj.Oznaka + " – " + x.Stroj.Naziv,
-            IzvajalecId = x.IzvajalecId,
-            Izvajalec = (x.Izvajalec.Ime + " " + x.Izvajalec.Priimek).Trim(),
-            PredvideniZacetek = x.PredvideniZacetek,
-            PredvideniKonec = x.PredvideniKonec,
-            Status = x.Status
-        })
-        .SingleOrDefaultAsync(cancellationToken);
-}
+            try
+            {
+                await context.SaveChangesAsync(cancellationToken);
+
+                return new(
+                    PripravaNalogaRezultat.Uspeh,
+                    new PripravljenDelovniNalogDto
+                    {
+                        Id = nalog.Id,
+                        Status = nalog.Status
+                    });
+            }
+            catch (DbUpdateException ex) when (
+                poskus == 0 &&
+                ex.InnerException is PostgresException
+                {
+                    SqlState: PostgresErrorCodes.DeadlockDetected
+                })
+            {
+                // Po razveljavitvi transakcije enkrat ponovimo shranjevanje.
+                continue;
+            }
+            catch (DbUpdateException ex) when (
+                ex.InnerException is PostgresException
+                {
+                    SqlState: PostgresErrorCodes.UniqueViolation,
+                    ConstraintName: "IX_DelovniNalogi_NarociloId"
+                })
+            {
+                context.Entry(nalog).State = EntityState.Detached;
+                return new(PripravaNalogaRezultat.NalogZeObstaja);
+            }
+            catch (DbUpdateException ex) when (
+                ex.InnerException is PostgresException postgres &&
+                postgres.SqlState == PostgresErrorCodes.ExclusionViolation &&
+                postgres.ConstraintName is
+                    ZasedenostBll.StrojConstraint or ZasedenostBll.IzvajalecConstraint)
+            {
+                context.Entry(nalog).State = EntityState.Detached;
+
+                var konflikt = await zasedenostBll.PreveriAsync(
+                    nalog.StrojId,
+                    nalog.IzvajalecId,
+                    nalog.PredvideniZacetek,
+                    nalog.PredvideniKonec,
+                    cancellationToken);
+
+                var potrjenKonflikt = konflikt with
+                {
+                    StrojZaseden = konflikt.StrojZaseden ||
+                        postgres.ConstraintName == ZasedenostBll.StrojConstraint,
+                    IzvajalecZaseden = konflikt.IzvajalecZaseden ||
+                        postgres.ConstraintName == ZasedenostBll.IzvajalecConstraint
+                };
+
+                return new(
+                    PripravaNalogaRezultat.TerminZaseden,
+                    Zasedenost: potrjenKonflikt);
+            }
+        }
+
+        throw new InvalidOperationException("Shranjevanje naloga se ni zaključilo.");
+    }
 }
