@@ -1,5 +1,5 @@
 import type { NarociloFormErrors, NarociloFormValues } from '../models/narociloForm'
-import { parseLokalniTermin } from '../utils/parseLokalniTermin'
+import { parseLokalniTermin } from '../../../utils/parseLokalniTermin'
 
 export function validirajNarocilo(values: NarociloFormValues): NarociloFormErrors {
   const errors: NarociloFormErrors = {}

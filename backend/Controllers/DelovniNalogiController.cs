@@ -63,6 +63,17 @@ public class DelovniNalogiController(DelovniNalogBll delovniNalogBll) : Controll
         };
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<DelovniNalogPodrobnostiDto>> Podrobnosti(int id,CancellationToken cancellationToken)
+    {
+        var nalog = await delovniNalogBll.PridobiPodrobnostiAsync(id, cancellationToken);
+
+        if (nalog is null)
+            return NotFound();
+
+        return Ok(nalog);
+    }
+
     private ActionResult NapakaPolja(string polje, string sporocilo)
     {
         ModelState.AddModelError(polje, sporocilo);

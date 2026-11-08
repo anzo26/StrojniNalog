@@ -44,3 +44,14 @@
   border-radius: 8px;
   color: #166534;
 }
+
+.narocilo-podrobnosti__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.narocilo-podrobnosti__actions:empty {
+  display: none;
+}

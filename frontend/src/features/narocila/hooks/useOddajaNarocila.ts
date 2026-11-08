@@ -4,7 +4,7 @@ import { oddajNarocilo } from '../api/narocilaApi'
 import { ustvariPraznoNarocilo } from '../models/narociloForm'
 import type { NarociloFormErrors, NarociloFormValues } from '../models/narociloForm'
 import type { OddanoNarocilo } from '../models/oddanoNarocilo'
-import { parseLokalniTermin } from '../utils/parseLokalniTermin'
+import { parseLokalniTermin } from '../../../utils/parseLokalniTermin'
 import { mapNarociloApiErrors } from '../validation/mapNarociloApiErrors'
 import { validirajNarocilo } from '../validation/narociloValidation'
 

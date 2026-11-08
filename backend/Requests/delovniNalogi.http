@@ -13,3 +13,9 @@ Content-Type: application/json
   "predvideniZacetek": "2026-11-10T08:00:00+01:00",
   "predvideniKonec": "2026-11-10T08:00:00+01:00"
 }
+
+### Podrobnosti delovnega naloga
+# @prompt accessToken
+GET {{baseUrl}}/api/delovni-nalogi/1
+Authorization: Bearer {{accessToken}}
+Accept: application/json

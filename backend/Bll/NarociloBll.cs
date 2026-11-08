@@ -90,7 +90,8 @@ public class NarociloBll(AppDbContext context)
                 ZeleniTermin = x.ZeleniTermin,
                 DatumOddaje = x.DatumOddaje,
                 Status = x.Status,
-                RazlogZavrnitve = x.RazlogZavrnitve
+                RazlogZavrnitve = x.RazlogZavrnitve,
+                DelovniNalogId = x.DelovniNalog == null ? null : (int?)x.DelovniNalog.Id,
             })
             .SingleOrDefaultAsync(cancellationToken);
     }
