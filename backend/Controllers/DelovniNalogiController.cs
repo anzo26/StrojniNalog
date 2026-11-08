@@ -59,12 +59,15 @@ public class DelovniNalogiController(DelovniNalogBll delovniNalogBll) : Controll
                     nameof(PripraviDelovniNalogDto.PredvideniKonec),
                     "Predvideni konec mora biti po predvidenem začetku."),
 
+            PripravaNalogaRezultat.TerminZaseden when odgovor.Zasedenost is not null =>
+                KonfliktTermina(odgovor.Zasedenost),
+
             _ => throw new InvalidOperationException("Neveljaven rezultat priprave naloga.")
         };
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<DelovniNalogPodrobnostiDto>> Podrobnosti(int id,CancellationToken cancellationToken)
+    public async Task<ActionResult<DelovniNalogPodrobnostiDto>> Podrobnosti(int id, CancellationToken cancellationToken)
     {
         var nalog = await delovniNalogBll.PridobiPodrobnostiAsync(id, cancellationToken);
 
@@ -78,5 +81,28 @@ public class DelovniNalogiController(DelovniNalogBll delovniNalogBll) : Controll
     {
         ModelState.AddModelError(polje, sporocilo);
         return ValidationProblem(ModelState);
+    }
+
+    private ActionResult KonfliktTermina(ZasedenostTermina zasedenost)
+    {
+        var opis = (zasedenost.StrojZaseden, zasedenost.IzvajalecZaseden) switch
+        {
+            (true, true) => "V izbranem terminu sta zasedena stroj in izvajalec.",
+            (true, false) => "V izbranem terminu je stroj zaseden.",
+            (false, true) => "V izbranem terminu je izvajalec zaseden.",
+            _ => throw new InvalidOperationException("Manjka podatek o zasedenem viru.")
+        };
+
+        var problem = new ProblemDetails
+        {
+            Status = StatusCodes.Status409Conflict,
+            Title = "Termin je zaseden.",
+            Detail = opis
+        };
+
+        problem.Extensions["strojZaseden"] = zasedenost.StrojZaseden;
+        problem.Extensions["izvajalecZaseden"] = zasedenost.IzvajalecZaseden;
+
+        return Conflict(problem);
     }
 }
