@@ -7,6 +7,8 @@ import type { PripravaNalogaFormValues } from '../models/pripravaNalogaFormValue
 import type { PripravaNalogaFormErrors } from '../models/pripravaNalogaFormErrors'
 import '../../../components/ui/Button.css'
 import './PripravaNalogaForm.css'
+import type { KonfliktZasedenosti } from '../models/konfliktZasedenosti'
+import { KonfliktZasedenostiObvestilo } from './KonfliktZasedenostiObvestilo'
 
 interface PripravaNalogaFormProps {
   values: PripravaNalogaFormValues
@@ -15,6 +17,7 @@ interface PripravaNalogaFormProps {
   izvajalci: Izvajalec[]
   isSubmitting: boolean
   submitError: string | null
+  konflikt: KonfliktZasedenosti | null
   onFieldChange: (field: keyof PripravaNalogaFormValues, value: string) => void
   onSubmit: () => void
   onCancel: () => void
@@ -30,7 +33,7 @@ function nazivIzvajalca(izvajalec: Izvajalec): string {
 
 export function PripravaNalogaForm({
   values, errors, stroji, izvajalci, isSubmitting,
-  submitError, onFieldChange, onSubmit, onCancel,
+  submitError, konflikt, onFieldChange, onSubmit, onCancel,
 }: PripravaNalogaFormProps) {
   const id = useId()
   const niMoznosti = stroji.length === 0 || izvajalci.length === 0
@@ -42,9 +45,10 @@ export function PripravaNalogaForm({
       aria-busy={isSubmitting}
       onSubmit={(event) => {
         event.preventDefault()
-        if (!isSubmitting && !niMoznosti) onSubmit()
+        if (!isSubmitting && !niMoznosti && !konflikt) onSubmit()
       }}
     >
+      {konflikt && <KonfliktZasedenostiObvestilo konflikt={konflikt} />}
       {submitError && (
         <div className="priprava-naloga-form__error" role="alert">
           {submitError}
@@ -120,7 +124,7 @@ export function PripravaNalogaForm({
           <button
             type="submit"
             className="button button--primary"
-            disabled={niMoznosti}
+            disabled={niMoznosti || konflikt !== null}
           >
             {isSubmitting ? 'Ustvarjanje …' : 'Ustvari delovni nalog'}
           </button>

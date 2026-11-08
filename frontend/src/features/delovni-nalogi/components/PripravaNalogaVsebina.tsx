@@ -61,6 +61,7 @@ export function PripravaNalogaVsebina({ narociloId }: PripravaNalogaVsebinaProps
             izvajalci={moznosti.izvajalci}
             isSubmitting={priprava.isSubmitting}
             submitError={priprava.submitError}
+            konflikt={priprava.konflikt}
             onFieldChange={priprava.setField}
             onSubmit={() => void priprava.submit()}
             onCancel={nazajNaNarocilo}

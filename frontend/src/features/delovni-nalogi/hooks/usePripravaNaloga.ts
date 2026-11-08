@@ -8,6 +8,8 @@ import type { PripravaNalogaFormErrors } from '../models/pripravaNalogaFormError
 import type { PripravljenDelovniNalog } from '../models/pripravljenDelovniNalog'
 import { validirajPripravoNaloga } from '../validation/pripravaNalogaValidation'
 import { mapPripravaNalogaApiErrors } from '../validation/mapPripravaNalogaApiErrors'
+import type { KonfliktZasedenosti } from '../models/konfliktZasedenosti'
+import { preberiKonfliktZasedenosti } from '../utils/preberiKonfliktZasedenosti'
 
 export function usePripravaNaloga(narociloId: number) {
   const [values, setValues] = useState(ustvariPraznoPripravoNaloga)
@@ -15,17 +17,26 @@ export function usePripravaNaloga(narociloId: number) {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [result, setResult] = useState<PripravljenDelovniNalog | null>(null)
-  const submissionState = useRef<'idle' | 'pending' | 'success'>('idle')
+  const submissionState = useRef<'idle' | 'pending' | 'success' | 'conflict'>('idle')
+  const [konflikt, setKonflikt] = useState<KonfliktZasedenosti | null>(null)
 
   function setField(field: keyof PripravaNalogaFormValues, value: string) {
-    if (submissionState.current !== 'idle') return
+    if (
+      submissionState.current === 'pending' ||
+      submissionState.current === 'success' ||
+      values[field] === value
+    ) {
+      return
+    }
 
+    submissionState.current = 'idle'
     setValues(previous => ({ ...previous, [field]: value }))
     setErrors(previous => {
       const next = { ...previous }
       delete next[field]
       return next
     })
+    setKonflikt(null)
     setSubmitError(null)
   }
 
@@ -84,10 +95,21 @@ export function usePripravaNaloga(narociloId: number) {
         } else if (error.status === 403) {
           setSubmitError('Za pripravo delovnega naloga nimate dovoljenja.')
         } else if (error.status === 409) {
-          setSubmitError(
-            `${error.message} Vrnite se na naročilo in preverite njegovo stanje.`,
-          )
-        } else {
+          const zaznanKonflikt = preberiKonfliktZasedenosti(error)
+
+          if (zaznanKonflikt) {
+            submissionState.current = 'conflict'
+            setKonflikt(zaznanKonflikt)
+            setSubmitError(null)
+          } else {
+            setSubmitError(
+              `${error.message} Vrnite se na naročilo in preverite njegovo stanje.`,
+            )
+          }
+        }
+
+
+        else {
           setSubmitError(error.message)
         }
       } else {
@@ -106,6 +128,7 @@ export function usePripravaNaloga(narociloId: number) {
     submitError,
     isSubmitting,
     result,
+    konflikt,
     setField,
     submit,
   }
