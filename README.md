@@ -201,9 +201,6 @@ Ponovna oddaja je omogočena po spremembi termina, stroja ali
 izvajalca. Backend pri novem poskusu ponovno preveri zasedenost.
 Potrditev ustvarjenega naloga se prikaže šele po uspešnem shranjevanju.
 
-Docker Compose zaganja PostgreSQL in Keycloak.
-Backend in frontend se trenutno zaganjata lokalno.
-
 API omogoča pregled nalogov glede na uporabniške pravice:
 organizator vidi vse naloge, izvajalec svoje dodeljene naloge,
 naročnik pa naloge pri svojih naročilih.
@@ -219,3 +216,16 @@ Prikazani so predvideni in dejanski časi ter trenutno stanje.
 
 Naročnik vidi napredek pri svojem naročilu, organizator pa lahko
 spremlja vse naloge. Po koncu dela status ostane V_IZVAJANJU do oddaje evidence.
+
+API omogoča dodeljenemu izvajalcu shranjevanje osnutka evidence
+in oddajo opravljenega dela v pregled.
+
+Evidenco je mogoče urejati v stanju V_IZVAJANJU ali V_DOPOLNITVI.
+Ob oddaji so obvezni pozitivne opravljene ure do največ 1000,
+neprazen opis ter veljavno zabeležena dejanska začetek in konec.
+
+Uspešna oddaja shrani evidenco in spremeni status v CAKA_NA_PREGLED.
+Neveljavne zahteve ohranijo prejšnje podatke in stanje. Organizator lahko evidenco bere.
+
+Docker Compose zaganja PostgreSQL in Keycloak.
+Backend in frontend se trenutno zaganjata lokalno.
