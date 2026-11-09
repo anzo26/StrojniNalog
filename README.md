@@ -212,3 +212,10 @@ Dodeljeni izvajalec lahko prek API-ja enkrat zabeleži začetek
 in konec dela. Čas določi strežnik. Začetek spremeni
 status v V_IZVAJANJU, beleženje konca pa ta status ohrani
 do oddaje evidence v pregled.
+
+Izvajalec lahko v uporabniškem vmesniku pregleduje svoje naloge,
+odpre podrobnosti ter zabeleži začetek in konec dela.
+Prikazani so predvideni in dejanski časi ter trenutno stanje.
+
+Naročnik vidi napredek pri svojem naročilu, organizator pa lahko
+spremlja vse naloge. Po koncu dela status ostane V_IZVAJANJU do oddaje evidence.

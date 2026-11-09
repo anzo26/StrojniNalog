@@ -7,7 +7,7 @@ interface DelovniNalogStatusProps {
 
 const prikazi = {
   NACRTOVAN: { label: 'Načrtovan', tone: 'info' },
-  V_IZVAJANJU: { label: 'V izvajanju', tone: 'info' },
+  V_IZVAJANJU: { label: 'V izvajanju', tone: 'progress' },
   CAKA_NA_PREGLED: { label: 'Čaka na pregled', tone: 'warning' },
   ZAKLJUCEN: { label: 'Zaključen', tone: 'success' },
   V_DOPOLNITVI: { label: 'V dopolnitvi', tone: 'danger' },

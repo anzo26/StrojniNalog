@@ -1,0 +1,33 @@
+.delovni-nalogi-page {
+  display: grid;
+  gap: 24px;
+}
+
+.delovni-nalogi-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.delovni-nalogi-heading h1 {
+  margin: 0;
+}
+
+.delovni-nalogi-state {
+  padding: 32px 24px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #475569;
+  text-align: center;
+}
+
+.delovni-nalogi-state p {
+  margin: 0;
+}
+
+.delovni-nalogi-state .button {
+  margin-top: 16px;
+}

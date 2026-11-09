@@ -6,4 +6,5 @@ public class DelovniNalogPodrobnostiDto : DelovniNalogSeznamDto
 {
     public int StrojId { get; init; }
     public int IzvajalecId { get; init; }
+    public bool JeDodeljenIzvajalec { get; init; }
 }

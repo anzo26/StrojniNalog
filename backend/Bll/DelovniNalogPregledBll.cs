@@ -49,7 +49,8 @@ public class DelovniNalogPregledBll(AppDbContext context)
                 PredvideniKonec = x.PredvideniKonec,
                 DejanskiZacetek = x.DejanskiZacetek,
                 DejanskiKonec = x.DejanskiKonec,
-                Status = x.Status
+                Status = x.Status,
+                JeDodeljenIzvajalec = dostop.JeIzvajalec && x.IzvajalecId == dostop.UporabnikId,
             })
             .SingleOrDefaultAsync(cancellationToken);
     }

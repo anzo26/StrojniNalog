@@ -1,13 +1,7 @@
-import type { StatusDelovnegaNaloga } from '../../../models/enums/StatusDelovnegaNaloga'
+import type { DelovniNalogSeznam } from './delovniNalogSeznam'
 
-export interface DelovniNalogPodrobnosti {
-  id: number
-  narociloId: number
+export interface DelovniNalogPodrobnosti extends DelovniNalogSeznam {
   strojId: number
-  stroj: string
   izvajalecId: number
-  izvajalec: string
-  predvideniZacetek: string
-  predvideniKonec: string
-  status: StatusDelovnegaNaloga
+  jeDodeljenIzvajalec: boolean
 }
