@@ -8,6 +8,7 @@ import './NarociloPodrobnostiVsebina.css'
 import { useState } from 'react'
 import { ObravnavaNarocila } from './ObravnavaNarocila'
 import { StatusNarocila } from '../../../models/enums/StatusNarocila'
+import { NapredekNaloga } from '../../delovni-nalogi/components/NapredekNaloga'
 
 interface NarociloPodrobnostiVsebinaProps {
     id: number
@@ -55,31 +56,24 @@ export function NarociloPodrobnostiVsebina({ id }: NarociloPodrobnostiVsebinaPro
                     <>
                         <NarociloPodatki narocilo={narocilo} prikaziNarocnika={jeOrganizator} />
 
-                        {jeOrganizator && (
-                            <div className="narocilo-podrobnosti__actions">
-                                {narocilo.status === StatusNarocila.Potrjeno &&
-                                    narocilo.delovniNalogId === null && (
-                                        <Link
-                                            to={`/narocila/${id}/delovni-nalog/novo`}
-                                            className="button button--primary"
-                                        >
-                                            Pripravi delovni nalog
-                                        </Link>
-                                    )}
-
-                                {narocilo.delovniNalogId != null && (
+                        <div className="narocilo-podrobnosti__actions">
+                            {jeOrganizator &&
+                                narocilo.status === StatusNarocila.Potrjeno &&
+                                narocilo.delovniNalogId === null && (
                                     <Link
-                                        to={`/delovni-nalogi/${narocilo.delovniNalogId}`}
+                                        to={`/narocila/${id}/delovni-nalog/novo`}
                                         className="button button--primary"
                                     >
-                                        Preglej delovni nalog
+                                        Pripravi delovni nalog
                                     </Link>
                                 )}
-                            </div>
-                        )}
+                        </div>
                     </>
                 )}
             </section>
+            {!nalaganje && !napaka && narocilo?.delovniNalogId != null && (
+                <NapredekNaloga nalogId={narocilo.delovniNalogId} />
+            )}
             {!nalaganje && !napaka && jeOrganizator && narocilo?.status === StatusNarocila.Oddano && (
                 <ObravnavaNarocila
                     id={narocilo.id}

@@ -1,0 +1,55 @@
+.nalogi-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.nalogi-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.nalogi-table th,
+.nalogi-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.nalogi-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.nalogi-table tbody th {
+  font-weight: 600;
+}
+
+.nalogi-table tbody td {
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.nalogi-table tbody tr {
+  cursor: pointer;
+}
+
+.nalogi-table tbody tr:hover,
+.nalogi-table tbody tr:focus-within {
+  background: #f1f5f9;
+}
+
+.nalogi-table tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.nalogi-table__link {
+  color: #1d4ed8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

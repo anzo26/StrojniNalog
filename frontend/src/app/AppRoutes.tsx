@@ -24,6 +24,8 @@ export function AppRoutes() {
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['organizator']} />}>
         <Route path="/narocila/:id/delovni-nalog/novo" element={<PripravaNalogaPage />} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={['organizator', 'izvajalec', 'narocnik']} />}>
         <Route path="/delovni-nalogi/:id" element={<DelovniNalogPodrobnostiPage />} />
       </Route>
       <Route path="*" element={<h2>Stran ne obstaja</h2>} />

@@ -63,3 +63,11 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.nalog-podrobnosti__success {
+  padding: 16px 20px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #166534;
+}
