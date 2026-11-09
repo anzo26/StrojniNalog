@@ -1,6 +1,6 @@
 using StrojniNalog.Api.DTO.Narocila;
 
-namespace StrojniNalog.Api.DTOs.Narocila;
+namespace StrojniNalog.Api.DTO.Narocila;
 
 public class NarociloPodrobnostiDto : NarociloSeznamDto
 {

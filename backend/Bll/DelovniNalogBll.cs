@@ -3,7 +3,7 @@ using Npgsql;
 using StrojniNalog.Api.Bll.Enums;
 using StrojniNalog.Api.Bll.Results;
 using StrojniNalog.Api.Data;
-using StrojniNalog.Api.DTOs.DelovniNalogi;
+using StrojniNalog.Api.DTO.DelovniNalogi;
 using StrojniNalog.Api.Models;
 using StrojniNalog.Api.Models.Enums;
 
@@ -74,26 +74,7 @@ public class DelovniNalogBll(AppDbContext context, IzvajalecBll izvajalecBll, Za
         return await ShraniAsync(nalog, cancellationToken);
     }
 
-    public async Task<DelovniNalogPodrobnostiDto?> PridobiPodrobnostiAsync(int id, CancellationToken cancellationToken = default)
-    {
-        return await context.DelovniNalogi
-            .AsNoTracking()
-            .Where(x => x.Id == id)
-            .Select(x => new DelovniNalogPodrobnostiDto
-            {
-                Id = x.Id,
-                NarociloId = x.NarociloId,
-                StrojId = x.StrojId,
-                Stroj = x.Stroj.Oznaka + " – " + x.Stroj.Naziv,
-                IzvajalecId = x.IzvajalecId,
-                Izvajalec = (x.Izvajalec.Ime + " " + x.Izvajalec.Priimek).Trim(),
-                PredvideniZacetek = x.PredvideniZacetek,
-                PredvideniKonec = x.PredvideniKonec,
-                Status = x.Status
-            })
-            .SingleOrDefaultAsync(cancellationToken);
-    }
-
+    
     private async Task<PripravaNalogaOdgovor> ShraniAsync(DelovniNalog nalog,CancellationToken cancellationToken)
     {
         context.DelovniNalogi.Add(nalog);

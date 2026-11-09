@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StrojniNalog.Api.DTOs.DelovniNalogi;
+namespace StrojniNalog.Api.DTO.DelovniNalogi;
 
 public class PripraviDelovniNalogDto
 {

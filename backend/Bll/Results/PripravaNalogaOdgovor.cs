@@ -1,5 +1,5 @@
 using StrojniNalog.Api.Bll.Enums;
-using StrojniNalog.Api.DTOs.DelovniNalogi;
+using StrojniNalog.Api.DTO.DelovniNalogi;
 
 namespace StrojniNalog.Api.Bll.Results;
 

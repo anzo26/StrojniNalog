@@ -203,3 +203,12 @@ Potrditev ustvarjenega naloga se prikaže šele po uspešnem shranjevanju.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.
+
+API omogoča pregled nalogov glede na uporabniške pravice:
+organizator vidi vse naloge, izvajalec svoje dodeljene naloge,
+naročnik pa naloge pri svojih naročilih.
+
+Dodeljeni izvajalec lahko prek API-ja enkrat zabeleži začetek
+in konec dela. Čas določi strežnik. Začetek spremeni
+status v V_IZVAJANJU, beleženje konca pa ta status ohrani
+do oddaje evidence v pregled.

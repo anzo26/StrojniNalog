@@ -1,4 +1,4 @@
-namespace StrojniNalog.Api.DTOs.Stroji;
+namespace StrojniNalog.Api.DTO.Stroji;
 
 public class StrojDto
 {

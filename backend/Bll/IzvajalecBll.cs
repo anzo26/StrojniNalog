@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StrojniNalog.Api.Data;
-using StrojniNalog.Api.DTOs.Uporabniki;
+using StrojniNalog.Api.DTO.Uporabniki;
 using StrojniNalog.Api.Integrations.Keycloak;
 
 namespace StrojniNalog.Api.Bll;

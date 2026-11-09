@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StrojniNalog.Api.Bll;
 using StrojniNalog.Api.DTO.Narocila;
-using StrojniNalog.Api.DTOs.Narocila;
 using StrojniNalog.Api.Extensions;
 using StrojniNalog.Api.Models;
 using StrojniNalog.Api.Models.Enums;

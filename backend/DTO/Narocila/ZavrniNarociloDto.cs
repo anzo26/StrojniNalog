@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace StrojniNalog.Api.DTOs.Narocila;
+namespace StrojniNalog.Api.DTO.Narocila;
 
 public class ZavrniNarociloDto
 {

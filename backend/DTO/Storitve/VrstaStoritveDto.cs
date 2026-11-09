@@ -1,4 +1,4 @@
-namespace StrojniNalog.Api.DTOs.Storitve;
+namespace StrojniNalog.Api.DTO.Storitve;
 
 public class VrstaStoritveDto
 {

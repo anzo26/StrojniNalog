@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StrojniNalog.Api.Data;
 using StrojniNalog.Api.DTO.Narocila;
-using StrojniNalog.Api.DTOs.Narocila;
-using StrojniNalog.Api.DTOs.Storitve;
+using StrojniNalog.Api.DTO.Storitve;
 using StrojniNalog.Api.Models;
 using StrojniNalog.Api.Models.Enums;
 
