@@ -31,6 +31,7 @@ builder.Services.AddScoped<DelovniNalogBll>();
 builder.Services.AddScoped<ZasedenostBll>();
 builder.Services.AddScoped<DelovniNalogPregledBll>();
 builder.Services.AddScoped<PotekIzvedbeBll>();
+builder.Services.AddScoped<EvidencaDelaBll>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<KeycloakExceptionHandler>();
 builder.Services.AddKeycloakAdmin(builder.Configuration);

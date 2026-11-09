@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:5176
+@nalogId = 1
+
+### Pregled evidence
+# @prompt accessToken
+GET {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+### Shranjevanje osnutka evidence
+# @prompt accessToken
+PUT {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "opravljeneUre": 4.5,
+  "opisIzvedbe": "Opravljen izkop in priprava terena."
+}
+
+### Oddaja evidence v pregled
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca/oddaja
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "opravljeneUre": 5.25,
+  "opisIzvedbe": "Opravljen izkop, priprava terena in čiščenje delovišča."
+}

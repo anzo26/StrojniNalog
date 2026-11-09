@@ -172,12 +172,6 @@ public class DelovniNalogiController(DelovniNalogBll delovniNalogBll, DelovniNal
     }
     private DostopDoNalogov PridobiDostop()
     {
-        var uporabnik = HttpContext.PridobiUporabnika();
-
-        return new(
-            uporabnik.Id,
-            User.IsInRole(AppRoles.Organizator),
-            User.IsInRole(AppRoles.Izvajalec),
-            User.IsInRole(AppRoles.Narocnik));
+        return HttpContext.PridobiDostopDoNalogov();
     }
 }
