@@ -1,4 +1,4 @@
-namespace StrojniNalog.Api.DTOs.Uporabniki;
+namespace StrojniNalog.Api.DTO.Uporabniki;
 
 public class IzvajalecDto
 {

@@ -1,5 +1,12 @@
 @baseUrl = http://localhost:5176
 
+### Seznam dostopnih nalogov
+# @prompt accessToken
+GET {{baseUrl}}/api/delovni-nalogi
+Authorization: Bearer {{accessToken}}
+Accept: application/json
+
+
 ### Priprava delovnega naloga
 # @prompt accessToken
 POST {{baseUrl}}/api/delovni-nalogi
@@ -19,3 +26,14 @@ Content-Type: application/json
 GET {{baseUrl}}/api/delovni-nalogi/1
 Authorization: Bearer {{accessToken}}
 Accept: application/json
+
+
+### Beleženje začetka dela
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi/1/zacetek
+Authorization: Bearer {{accessToken}}
+
+### Beleženje konca dela
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi/1/konec
+Authorization: Bearer {{accessToken}}

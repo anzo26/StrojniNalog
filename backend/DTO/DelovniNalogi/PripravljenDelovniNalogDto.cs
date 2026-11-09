@@ -1,6 +1,6 @@
 using StrojniNalog.Api.Models.Enums;
 
-namespace StrojniNalog.Api.DTOs.DelovniNalogi;
+namespace StrojniNalog.Api.DTO.DelovniNalogi;
 
 public class PripravljenDelovniNalogDto
 {

@@ -1,6 +1,6 @@
 using StrojniNalog.Api.Models.Enums;
 
-namespace StrojniNalog.Api.DTOs.Narocila;
+namespace StrojniNalog.Api.DTO.Narocila;
 
 public class OddanoNarociloDto
 {

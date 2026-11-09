@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StrojniNalog.Api.Bll;
-using StrojniNalog.Api.DTOs.Storitve;
+using StrojniNalog.Api.DTO.Storitve;
 using StrojniNalog.Api.Security;
 
 namespace StrojniNalog.Api.Controllers;

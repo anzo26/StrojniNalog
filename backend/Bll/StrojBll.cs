@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StrojniNalog.Api.Data;
-using StrojniNalog.Api.DTOs.Stroji;
+using StrojniNalog.Api.DTO.Stroji;
 
 namespace StrojniNalog.Api.Bll;
 
