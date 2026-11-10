@@ -9,4 +9,6 @@ public class EvidencaDelaDto
     public string? OpisIzvedbe { get; init; }
     public string? RazlogDopolnitve { get; init; }
     public StatusDelovnegaNaloga Status { get; init; }
+    public DateTime? DejanskiZacetek { get; set; }
+    public DateTime? DejanskiKonec { get; set; }
 }
