@@ -101,3 +101,9 @@
     grid-template-columns: 1fr;
   }
 }
+
+.nalog-podrobnosti__right {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}

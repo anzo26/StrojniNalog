@@ -9,6 +9,8 @@ import '../../../components/ui/Button.css'
 import './DelovniNalogPodrobnostiPage.css'
 import { EvidencaDelaObrazec } from '../components/EvidencaDelaObrazec'
 import { useEvidencaDela } from '../hooks/useEvidencaDela'
+import { ObravnavaEvidence } from '../components/ObravnavaEvidence'
+import { StatusDelovnegaNaloga } from '../../../models/enums/StatusDelovnegaNaloga'
 
 export function DelovniNalogPodrobnostiPage() {
   const { id } = useParams<{ id: string }>()
@@ -87,9 +89,8 @@ function DelovniNalogPodrobnostiVsebina({ id }: { id: number }) {
 
       {!nalaganje && !napaka && nalog && (
         <div
-          className={`nalog-podrobnosti__layout ${
-            prikaziEvidenco ? 'nalog-podrobnosti__layout--evidenca' : ''
-          }`}
+          className={`nalog-podrobnosti__layout ${prikaziEvidenco ? 'nalog-podrobnosti__layout--evidenca' : ''
+            }`}
         >
           <div className="nalog-podrobnosti__left">
             <section
@@ -144,11 +145,21 @@ function DelovniNalogPodrobnostiVsebina({ id }: { id: number }) {
           </div>
 
           {prikaziEvidenco && (
-            <EvidencaDelaObrazec
-              nalog={nalog}
-              obrazec={evidencaObrazec}
-              onUspeh={obUspehu}
-            />
+            <div className="nalog-podrobnosti__right">
+              <EvidencaDelaObrazec
+                nalog={nalog}
+                obrazec={evidencaObrazec}
+                onUspeh={obUspehu}
+              />
+
+              {jeOrganizator &&
+                nalog.status === StatusDelovnegaNaloga.CakaNaPregled && (
+                  <ObravnavaEvidence
+                    id={nalog.id}
+                    onUspeh={obUspehu}
+                  />
+                )}
+            </div>
           )}
         </div>
       )}
