@@ -71,3 +71,33 @@
   border-radius: 8px;
   color: #166534;
 }
+
+.nalog-podrobnosti__layout {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.nalog-podrobnosti__layout--evidenca {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+}
+
+.nalog-podrobnosti__left {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+
+.nalog-podrobnosti__panel h2 {
+  margin: 0 0 24px;
+}
+
+.nalog-podrobnosti__layout--evidenca .nalog-podrobnosti__podatki {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1000px) {
+  .nalog-podrobnosti__layout--evidenca {
+    grid-template-columns: 1fr;
+  }
+}
