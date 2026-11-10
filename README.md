@@ -196,9 +196,10 @@ v pregled. Oddaja zahteva pozitivno število ur do največ 1000,
 neprazen opis ter veljavna dejanska časa. Urejanje je dovoljeno
 samo v stanju V_IZVAJANJU ali V_DOPOLNITVI.
 
-API organizatorju omogoča potrditev oddane evidence in zaključek
-naloga ali vrnitev v dopolnitev z obveznim razlogom. Uporabniški
-vmesnik za ti dejanji še sledi.
+Organizator lahko v uporabniškem vmesniku pregleda oddano evidenco,
+jo potrdi in zaključi nalog ali jo z obveznim razlogom vrne
+izvajalcu v dopolnitev. Izvajalec vidi razlog ter lahko evidenco
+popravi in ponovno odda v pregled.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.
