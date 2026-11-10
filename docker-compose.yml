@@ -33,6 +33,8 @@ services:
       KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?Nastavi KEYCLOAK_DB_PASSWORD}
     volumes:
       - ./docker/postgres/init-keycloak.sql:/init-keycloak.sql:ro
+    tmpfs:
+      - /var/lib/postgresql
     command: ["psql", "-v", "ON_ERROR_STOP=1", "-f", "/init-keycloak.sql"]
     depends_on:
       postgres:
