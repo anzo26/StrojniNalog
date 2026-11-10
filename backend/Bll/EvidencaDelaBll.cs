@@ -10,7 +10,7 @@ namespace StrojniNalog.Api.Bll;
 
 public class EvidencaDelaBll(AppDbContext context)
 {
-    public async Task<EvidencaDelaDto?> PridobiAsync(int nalogId,DostopDoNalogov dostop,CancellationToken cancellationToken = default)
+    public async Task<EvidencaDelaDto?> PridobiAsync(int nalogId, DostopDoNalogov dostop, CancellationToken cancellationToken = default)
     {
         return await context.DelovniNalogi
             .AsNoTracking()
@@ -24,12 +24,14 @@ public class EvidencaDelaBll(AppDbContext context)
                 OpravljeneUre = x.OpravljeneUre,
                 OpisIzvedbe = x.OpisIzvedbe,
                 RazlogDopolnitve = x.RazlogDopolnitve,
-                Status = x.Status
+                Status = x.Status,
+                DejanskiZacetek = x.DejanskiZacetek,
+                DejanskiKonec = x.DejanskiKonec,
             })
             .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<EvidencaDelaRezultat> ShraniAsync(int nalogId,int izvajalecId,ShraniEvidencoDto dto,CancellationToken cancellationToken = default)
+    public async Task<EvidencaDelaRezultat> ShraniAsync(int nalogId, int izvajalecId, ShraniEvidencoDto dto, CancellationToken cancellationToken = default)
     {
         if (dto.OpravljeneUre is decimal ure && !SoUreVeljavne(ure))
             return EvidencaDelaRezultat.NeveljavneUre;
@@ -51,7 +53,7 @@ public class EvidencaDelaBll(AppDbContext context)
             nalogId, izvajalecId, oddaja: false, cancellationToken);
     }
 
-    public async Task<EvidencaDelaRezultat> OddajAsync(int nalogId,int izvajalecId,OddajEvidencoDto dto,CancellationToken cancellationToken = default)
+    public async Task<EvidencaDelaRezultat> OddajAsync(int nalogId, int izvajalecId, OddajEvidencoDto dto, CancellationToken cancellationToken = default)
     {
         if (dto.OpravljeneUre is not decimal ure || !SoUreVeljavne(ure))
             return EvidencaDelaRezultat.NeveljavneUre;
@@ -93,7 +95,7 @@ public class EvidencaDelaBll(AppDbContext context)
         return ure > 0m && ure <= 1000m;
     }
 
-    private async Task<EvidencaDelaRezultat> RezultatBrezSpremembeAsync(int nalogId,int izvajalecId,bool oddaja, CancellationToken cancellationToken)
+    private async Task<EvidencaDelaRezultat> RezultatBrezSpremembeAsync(int nalogId, int izvajalecId, bool oddaja, CancellationToken cancellationToken)
     {
         var nalog = await context.DelovniNalogi
             .AsNoTracking()

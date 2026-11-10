@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:5176
 @nalogId = 1
 
-### Pregled evidence
+### Pregled evidence — žeton organizatorja
 # @prompt accessToken
 GET {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca
 Authorization: Bearer {{accessToken}}
@@ -28,3 +28,18 @@ Content-Type: application/json
   "opravljeneUre": 5.25,
   "opisIzvedbe": "Opravljen izkop, priprava terena in čiščenje delovišča."
 }
+
+### Vrnitev v dopolnitev — pričakovano 204
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca/vrnitev
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "razlog": "Dopolnite opis izvedbe z navedbo opravljenih del."
+}
+
+### Potrditev evidence — pričakovano 204 samo v CAKA_NA_PREGLED
+# @prompt accessToken
+POST {{baseUrl}}/api/delovni-nalogi/{{nalogId}}/evidenca/potrditev
+Authorization: Bearer {{accessToken}}

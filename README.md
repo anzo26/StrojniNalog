@@ -180,52 +180,25 @@ Preverite naslov API-ja ter URL, realm in Client ID Keycloaka.
 ## Trenutno stanje
 
 Implementirani so prijava prek Keycloaka, preverjanje uporabniških
-vlog, oddaja naročila ter pregled in obravnava naročil.
+vlog ter oddaja, pregled in obravnava naročil.
 
-Naročnik pregleduje svoja naročila, organizator pa vsa.
-Organizator lahko potrdi ali z obveznim razlogom zavrne naročilo
-v stanju ODDANO.
+Organizator lahko za potrjeno naročilo pripravi delovni nalog
+z izbiro stroja, izvajalca in termina. Prekrivanje terminov istega
+stroja ali izvajalca preprečujeta backend in podatkovna baza.
+Obrazec prikaže konflikte in ohrani vnesene podatke.
 
-API omogoča pripravo delovnega naloga za potrjeno naročilo.
-Preverja razpoložljivost stroja, aktivnost in vlogo izvajalca,
-veljavnost termina ter preprečuje več nalogov za isto naročilo.
+Izvajalec pregleduje svoje dodeljene naloge ter beleži začetek
+in konec dela. Naročnik spremlja napredek pri svojih naročilih,
+organizator pa pri vseh nalogih.
 
-Organizator lahko prek obrazca za potrjeno naročilo pripravi
-delovni nalog z izbiro stroja, izvajalca in predvidenega termina.
-Po ustvarjanju lahko pregleduje nalog in njegov status.
+Dodeljeni izvajalec lahko shrani osnutek evidence in jo odda
+v pregled. Oddaja zahteva pozitivno število ur do največ 1000,
+neprazen opis ter veljavna dejanska časa. Urejanje je dovoljeno
+samo v stanju V_IZVAJANJU ali V_DOPOLNITVI.
 
-Obrazec ob konfliktu prikaže, ali je zaseden stroj, izvajalec
-ali oba. Vneseni podatki ostanejo ohranjeni.
-
-Ponovna oddaja je omogočena po spremembi termina, stroja ali
-izvajalca. Backend pri novem poskusu ponovno preveri zasedenost.
-Potrditev ustvarjenega naloga se prikaže šele po uspešnem shranjevanju.
-
-API omogoča pregled nalogov glede na uporabniške pravice:
-organizator vidi vse naloge, izvajalec svoje dodeljene naloge,
-naročnik pa naloge pri svojih naročilih.
-
-Dodeljeni izvajalec lahko prek API-ja enkrat zabeleži začetek
-in konec dela. Čas določi strežnik. Začetek spremeni
-status v V_IZVAJANJU, beleženje konca pa ta status ohrani
-do oddaje evidence v pregled.
-
-Izvajalec lahko v uporabniškem vmesniku pregleduje svoje naloge,
-odpre podrobnosti ter zabeleži začetek in konec dela.
-Prikazani so predvideni in dejanski časi ter trenutno stanje.
-
-Naročnik vidi napredek pri svojem naročilu, organizator pa lahko
-spremlja vse naloge. Po koncu dela status ostane V_IZVAJANJU do oddaje evidence.
-
-API omogoča dodeljenemu izvajalcu shranjevanje osnutka evidence
-in oddajo opravljenega dela v pregled.
-
-Evidenco je mogoče urejati v stanju V_IZVAJANJU ali V_DOPOLNITVI.
-Ob oddaji so obvezni pozitivne opravljene ure do največ 1000,
-neprazen opis ter veljavno zabeležena dejanska začetek in konec.
-
-Uspešna oddaja shrani evidenco in spremeni status v CAKA_NA_PREGLED.
-Neveljavne zahteve ohranijo prejšnje podatke in stanje. Organizator lahko evidenco bere.
+API organizatorju omogoča potrditev oddane evidence in zaključek
+naloga ali vrnitev v dopolnitev z obveznim razlogom. Uporabniški
+vmesnik za ti dejanji še sledi.
 
 Docker Compose zaganja PostgreSQL in Keycloak.
 Backend in frontend se trenutno zaganjata lokalno.
