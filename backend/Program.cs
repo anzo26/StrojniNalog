@@ -3,6 +3,7 @@ using StrojniNalog.Api.Bll;
 using StrojniNalog.Api.Data;
 using StrojniNalog.Api.ExceptionHandlers;
 using StrojniNalog.Api.Extensions;
+using StrojniNalog.Api.HealthChecks;
 using StrojniNalog.Api.Middleware;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -36,8 +37,10 @@ builder.Services.AddScoped<ObravnavaEvidenceBll>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<KeycloakExceptionHandler>();
 builder.Services.AddKeycloakAdmin(builder.Configuration);
+builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database");
 
 var app = builder.Build();
+app.ApplyDatabaseMigrations();
 app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
@@ -46,7 +49,10 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+if (app.Configuration.GetValue<bool>("HttpsRedirection:Enabled", true))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseRouting();
 app.UseCors(CorsExtensions.FrontendPolicy);
@@ -60,5 +66,7 @@ app.MapGet("/", () => Results.Ok(new
     name = "StrojniNalog API",
     status = "Running"
 }));
+
+app.MapHealthChecks("/health/ready");
 
 app.Run();

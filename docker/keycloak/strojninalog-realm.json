@@ -369,6 +369,7 @@
         }
       ],
       "security-admin-console": [],
+      "strojninalog-admin-reader": [],
       "strojninalog-api": [],
       "admin-cli": [],
       "account-console": [],
@@ -529,6 +530,31 @@
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
   "webAuthnPolicyPasswordlessExtraOrigins": [],
+  "users": [
+    {
+      "id": "24fe0e07-ca3d-483c-81ea-e321521ef2f6",
+      "username": "service-account-strojninalog-admin-reader",
+      "emailVerified": false,
+      "enabled": true,
+      "createdTimestamp": 1793970853713,
+      "totp": false,
+      "serviceAccountClientId": "strojninalog-admin-reader",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-strojninalog"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "view-realm",
+          "query-users",
+          "view-users"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    }
+  ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
@@ -538,6 +564,16 @@
     }
   ],
   "clientScopeMappings": {
+    "realm-management": [
+      {
+        "client": "strojninalog-admin-reader",
+        "roles": [
+          "view-realm",
+          "view-users",
+          "query-users"
+        ]
+      }
+    ],
     "account": [
       {
         "client": "account-console",
@@ -836,6 +872,62 @@
       ],
       "defaultClientScopes": [
         "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "organization",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "id": "9e401858-a21b-495b-847f-e0b20460c6b2",
+      "clientId": "strojninalog-admin-reader",
+      "name": "StrojniNalog – branje uporabnikov",
+      "description": "",
+      "rootUrl": "",
+      "adminUrl": "",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KEYCLOAK_SERVICE_CLIENT_SECRET}",
+      "redirectUris": [],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "realm_client": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1793970853",
+        "backchannel.logout.session.required": "true",
+        "oauth2.jwt.authorization.grant.enabled": "false",
+        "standard.token.exchange.enabled": "false",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false",
+        "dpop.bound.access.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": false,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "service_account",
         "acr",
         "roles",
         "profile",
