@@ -1,6 +1,6 @@
 # StrojniNalog
 
-Spletna rešitev za naročanje in organizacijo storitev z gradbeno mehanizacijo. Naročnik odda naročilo, organizator ga obravnava ter določi termin, stroj in izvajalca. Izvajalec evidentira opravljeno delo, organizator pa evidenco pregleda in zaključi delovni nalog.
+Spletna aplikacija za naročanje in organizacijo storitev z gradbeno mehanizacijo. Naročnik odda naročilo, organizator pripravi delovni nalog, izvajalec evidentira delo, organizator pa evidenco potrdi ali vrne v dopolnitev.
 
 ## Predvidene tehnologije
 
@@ -29,177 +29,117 @@ Spletna rešitev za naročanje in organizacijo storitev z gradbeno mehanizacijo.
 - `backend/` – API, poslovna pravila in dostop do podatkov.
 - `docs/` – projektna dokumentacija, wireframe-i in ADR.
 
-## Lokalni razvoj
+## Lokalni zagon z Docker Compose
 
-### Predpogoji
-- .NET SDK 10
-- Node.js 24 in npm
-- Docker z Docker Compose
-- Orodje dotnet-ef 10, usklajeno z različico EF Core v projektu
+Potrebujete Git in zagnan Docker Desktop z Docker Compose. Lokalna namestitev .NET, Node.js in PostgreSQL za ta način zagona ni potrebna.
 
-Vse ukaze izvajamo iz korenske mape repozitorija, razen kjer je navedeno drugače.
-
-### 1. Nastavitve okolja
-Datoteko `.env.example` kopirajte v `.env`.
-
-Nastavite:
-- `POSTGRES_PASSWORD` – geslo skrbnika PostgreSQL;
-- `KEYCLOAK_DB_PASSWORD` – geslo uporabnika baze Keycloak;
-- `KEYCLOAK_ADMIN_PASSWORD` – geslo začetnega skrbnika Keycloaka.
-
-Po potrebi prilagodite `POSTGRES_PORT` in `KEYCLOAK_PORT`.
-
-### 2. Zagon PostgreSQL in Keycloaka
-Zaženite Docker in izvedite:
+### 1. Priprava
 
 ```bash
+git clone https://github.com/anzo26/StrojniNalog.git
+cd StrojniNalog
+cp .env.example .env
+```
+
+V korenski `.env` nastavite svoje vrednosti za:
+
+- `POSTGRES_PASSWORD` – geslo skrbnika PostgreSQL;
+- `APP_DB_PASSWORD` – geslo uporabnika poslovne baze;
+- `KEYCLOAK_DB_PASSWORD` – geslo uporabnika Keycloakove baze;
+- `KEYCLOAK_ADMIN_PASSWORD` – geslo začetnega skrbnika Keycloaka;
+- `KEYCLOAK_SERVICE_CLIENT_SECRET` – skrivnost servisnega odjemalca backenda.
+
+### 2. Zagon
+
+Vse ukaze izvajajte iz korenske mape repozitorija:
+
+```bash
+docker compose up -d --build
+docker compose ps -a
+```
+
+Prvi zagon pripravi ločeni bazi in uporabnika za poslovne podatke ter Keycloak, izvede EF migracije, doda začetne stroje in vrste storitev ter uvozi realm. Počakajte, da imajo `postgres`, `keycloak`, `backend` in `frontend` stanje `healthy`. Pripravljalni storitvi se zaključita z `Exited (0)`.
+
+| Storitev | Lokalni naslov |
+| --- | --- |
+| Aplikacija | http://localhost:5173 |
+| API | http://localhost:5176 |
+| Preverjanje backenda in povezave z bazo | http://localhost:5176/health/ready |
+| Keycloak | http://localhost:8080 |
+| PostgreSQL | `localhost:5432` |
+
+Frontend uporablja privzeti port `5173`, ki je dovoljen tudi v nastavitvah Keycloaka in CORS. Sprememba javnih portov zahteva uskladitev povezanih nastavitev in ponovno gradnjo frontenda.
+
+### 3. Računi za preverjanje
+
+Poslovni računi niso vključeni v izvoz. Naročnik se registrira prek aplikacije in samodejno dobi vlogo `narocnik`.
+
+Za zaposlene odprite Keycloak in se prijavite z `KEYCLOAK_ADMIN` ter `KEYCLOAK_ADMIN_PASSWORD` iz `.env`. V realmu `strojninalog` pod **Users**:
+
+1. Ustvarite organizatorja in dva izvajalca; vnesite ime, priimek in e-pošto.
+2. Nastavite gesla z možnostjo **Temporary: Off**.
+3. V **Role mapping** odstranite `default-roles-strojninalog` in morebitno neposredno vlogo `narocnik`.
+4. Organizatorju dodelite vlogo `organizator`, izvajalcema pa `izvajalec`.
+5. Za uporabo upravljanja profila zaposlenim dodelite še client vlogi `manage-account` in `view-profile` odjemalca `account`.
+
+Preverite potek: oddaja naročila → potrditev in priprava naloga → začetek in konec dela → oddaja evidence → vrnitev v dopolnitev ali potrditev in zaključek.
+
+### Ustavitev in ponovni zagon
+
+```bash
+docker compose down
 docker compose up -d
 ```
 
-Storitev `keycloak-db-init` pripravi bazo in uporabnika Keycloaka.
+Po spremembah kode ponovno uporabite `docker compose up -d --build`.
 
-### 3. Povezava backenda z bazo
-Povezavo lokalno shranite v .NET User Secrets:
+Realm se bere iz `docker/keycloak/strojninalog-realm.json`. Če že obstaja, se uvoz preskoči; sprememba datoteke ne posodobi obstoječega realma. Servisni račun in njegove bralne pravice so vključeni v konfiguracijo.
 
-```bash
-dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Host=localhost;Port=5432;Database=strojninalog;Username=postgres;Password=TVOJE_GESLO' --project backend/StrojniNalog.Api.csproj
-```
+### Če gradnja javi `additional privileges requested`
 
-`TVOJE_GESLO` zamenjajte z vrednostjo `POSTGRES_PASSWORD` iz `.env`. Če uporabljate drug port ali uporabnika, prilagodite tudi `Port` in `Username`.
-
-### 4. Priprava poslovne baze
-Namestite orodje dotnet-ef 10, če še ni nameščeno:
+Če Docker Bake zavrne dostop do gradbenega konteksta, lahko sliki za privzete porte zgradite neposredno in nato zaženete Compose:
 
 ```bash
-dotnet tool install --global dotnet-ef --version "10.*"
+docker build -t strojninalog-api:local ./backend
+docker build -t strojninalog-web:local \
+  --build-arg VITE_API_URL=http://localhost:5176 \
+  --build-arg VITE_KEYCLOAK_URL=http://localhost:8080 \
+  --build-arg VITE_KEYCLOAK_REALM=strojninalog \
+  --build-arg VITE_KEYCLOAK_CLIENT_ID=strojninalog-frontend ./frontend
+docker compose up -d --no-build
 ```
 
-Izvedite migracije:
+## Razvoj brez vsebnikov za API in frontend
+
+Dodatno potrebujete .NET SDK 10, Node.js 24 z npm in orodje `dotnet-ef` 10, usklajeno z EF Core v projektu. Če orodja še ni, ga namestite z `dotnet tool install --global dotnet-ef --version "10.*"`.
 
 ```bash
-dotnet ef database update --project backend/StrojniNalog.Api.csproj -- --environment Development
+docker compose stop frontend backend
+docker compose up -d postgres app-db-init keycloak
+cp frontend/.env.example frontend/.env
 ```
 
-Ukaz ustvari tabele in doda začetne vrste storitev ter stroje.
-
-### 5. Priprava Keycloaka
-Skrbniška konzola je dostopna na [http://localhost:8080](http://localhost:8080). Če je `KEYCLOAK_PORT` spremenjen, uporabite nastavljeni port.
-
-Ob prvi pripravi:
-1. Prijavite se z vrednostma `KEYCLOAK_ADMIN` in `KEYCLOAK_ADMIN_PASSWORD` iz `.env`.
-2. V realmu `master` ustvarite trajnega skrbnika, nastavite geslo z izključeno možnostjo `Temporary` in mu dodelite realm vlogo `admin`.
-3. Preverite prijavo novega skrbnika in nato odstranite začasnega.
-
-Realm `strojninalog` se ob prvem zagonu uvozi iz `docker/keycloak/strojninalog-realm.json`. Če že obstaja, se uvoz preskoči. Spremembe datoteke zato ne posodobijo obstoječega realma.
-
-Realm vsebuje poslovne vloge, nastavitve registracije ter odjemalca `strojninalog-frontend` in `strojninalog-api`.
-
-Uporabniki niso vključeni v izvoz. Naročniki se registrirajo sami in dobijo poslovno vlogo `narocnik`.
-
-Račune zaposlenih v realmu `strojninalog` pripravi skrbnik:
-- ustvari uporabnika ter vnese ime, priimek in e-pošto;
-- odstrani dodelitev `default-roles-strojninalog` in morebitno neposredno vlogo `narocnik`;
-- dodeli eno poslovno vlogo: `organizator` ali `izvajalec`;
-- dodeli client vlogi `manage-account` in `view-profile` odjemalca `account`;
-- nastavi geslo in izklopi možnost `Temporary`.
-
-Gesla se nastavijo lokalno in se ne vključujejo v Git.
-
-### Servisni dostop backenda do Keycloaka
-
-Backend uporablja Keycloak Admin API za pridobivanje izvajalcev in
-preverjanje njihove vloge pri pripravi delovnega naloga.
-
-V realmu `strojninalog` mora obstajati odjemalec
-`strojninalog-admin-reader`. Če ga uvoženi realm še ne vsebuje,
-ga ustvarite prek `Clients → Create client`.
-
-Nastavitve odjemalca:
-- Client type: `OpenID Connect`;
-- Client authentication: vključeno;
-- Service accounts roles: vključeno;
-- Authorization: izključeno;
-- Standard flow, Direct access grants in ostali prijavni tokovi: izključeni.
-
-V zavihku `Service account roles` dodelite naslednje vloge
-odjemalca `realm-management`:
-- `query-users`;
-- `view-users`;
-- `view-realm`.
-
-Odprite `Client scopes → strojninalog-admin-reader-dedicated → Scope`.
-Izključite `Full scope allowed` in med dovoljene vloge dodajte
-iste tri vloge odjemalca `realm-management`.
-
-Nastavitve lokalne povezave so v `backend/appsettings.Development.json`:
-
-```json
-"KeycloakAdmin": {
-  "BaseUrl": "http://localhost:8080",
-  "Realm": "strojninalog",
-  "ClientId": "strojninalog-admin-reader"
-}
-```
-
-Če uporabljate drug port Keycloaka, prilagodite `BaseUrl`.
-
-V zavihku `Credentials` kopirajte trenutni `Client secret` in ga
-iz korenske mape repozitorija shranite v .NET User Secrets:
+V `frontend/.env` preverite nastavitve `VITE_*`. Backend korenske `.env` pri neposrednem lokalnem zagonu ne bere; povezavo in servisno skrivnost nastavite z User Secrets:
 
 ```bash
+dotnet user-secrets set 'ConnectionStrings:DefaultConnection' 'Host=localhost;Port=5432;Database=strojninalog;Username=strojninalog_app;Password=TVOJE_GESLO' --project backend/StrojniNalog.Api.csproj
 dotnet user-secrets set 'KeycloakAdmin:ClientSecret' 'TVOJ_CLIENT_SECRET' --project backend/StrojniNalog.Api.csproj
+dotnet ef database update --project backend/StrojniNalog.Api.csproj -- --environment Development
+dotnet watch --project backend/StrojniNalog.Api.csproj
 ```
 
-`TVOJ_CLIENT_SECRET` zamenjajte z dejansko vrednostjo.
-Skrivnost se ne vključuje v Git ali frontend.
+Geslo in secret zamenjajte z vrednostma `APP_DB_PASSWORD` in `KEYCLOAK_SERVICE_CLIENT_SECRET` iz korenske `.env`. Če ste spremenili ime baze, uporabnika ali port, prilagodite tudi povezavo.
 
-Nastavitve pripravite pred zagonom backenda.
-Po spremembi skrivnosti backend ponovno zaženite.
-
-### 6. Zagon backenda
-Pred zagonom pripravite servisni dostop do Keycloaka po navodilih
-v razdelku »Servisni dostop backenda do Keycloaka«.
+V drugem terminalu:
 
 ```bash
-dotnet run --project backend/StrojniNalog.Api.csproj
-```
-
-### 7. Zagon frontenda
-V drugem terminalu odprite mapo `frontend` in izvedite:
-
-```bash
+cd frontend
 npm ci
 npm run dev
 ```
 
-Pred prvim zagonom kopirajte `frontend/.env.example` v `frontend/.env`.
-Preverite naslov API-ja ter URL, realm in Client ID Keycloaka.
-`VITE_API_URL` mora ustrezati naslovu lokalnega backenda.
-
+Oba načina zagona uporabljata iste podatke. Pred prehodom nazaj na celoten Compose ustavite lokalna procesa, da sprostite porte.
 
 ## Trenutno stanje
 
-Implementirani so prijava prek Keycloaka, preverjanje uporabniških
-vlog ter oddaja, pregled in obravnava naročil.
-
-Organizator lahko za potrjeno naročilo pripravi delovni nalog
-z izbiro stroja, izvajalca in termina. Prekrivanje terminov istega
-stroja ali izvajalca preprečujeta backend in podatkovna baza.
-Obrazec prikaže konflikte in ohrani vnesene podatke.
-
-Izvajalec pregleduje svoje dodeljene naloge ter beleži začetek
-in konec dela. Naročnik spremlja napredek pri svojih naročilih,
-organizator pa pri vseh nalogih.
-
-Dodeljeni izvajalec lahko shrani osnutek evidence in jo odda
-v pregled. Oddaja zahteva pozitivno število ur do največ 1000,
-neprazen opis ter veljavna dejanska časa. Urejanje je dovoljeno
-samo v stanju V_IZVAJANJU ali V_DOPOLNITVI.
-
-Organizator lahko v uporabniškem vmesniku pregleda oddano evidenco,
-jo potrdi in zaključi nalog ali jo z obveznim razlogom vrne
-izvajalcu v dopolnitev. Izvajalec vidi razlog ter lahko evidenco
-popravi in ponovno odda v pregled.
-
-Docker Compose zaganja PostgreSQL in Keycloak.
-Backend in frontend se trenutno zaganjata lokalno.
+Implementirane so funkcionalnosti MVP US-01–US-07: prijava in dostop po vlogah, naročila, razporejanje brez prekrivanja terminov stroja ali izvajalca, spremljanje izvedbe ter oddaja in obravnava evidence. Celotno aplikacijo zaganja Docker Compose; frontend in backend je mogoče razvijati tudi lokalno.

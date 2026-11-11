@@ -16,6 +16,7 @@ public static class AuthenticationExtensions
     {
         var authority = configuration["Keycloak:Authority"];
         var audience = configuration["Keycloak:Audience"];
+        var metadataAddress = configuration["Keycloak:MetadataAddress"];
 
         if (string.IsNullOrWhiteSpace(authority) || string.IsNullOrWhiteSpace(audience))
             throw new InvalidOperationException("Manjkajo nastavitve Keycloak:Authority ali Keycloak:Audience.");
@@ -25,6 +26,9 @@ public static class AuthenticationExtensions
             {
                 options.Authority = authority;
                 options.Audience = audience;
+                if (!string.IsNullOrWhiteSpace(metadataAddress)){
+                    options.MetadataAddress = metadataAddress;
+                } 
                 options.RequireHttpsMetadata = !environment.IsDevelopment();
                 options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -36,6 +40,7 @@ public static class AuthenticationExtensions
                     RequireSignedTokens = true,
                     NameClaimType = "preferred_username",
                     RoleClaimType = ClaimTypes.Role,
+                    ValidIssuer = authority,
                     ClockSkew = TimeSpan.FromSeconds(30)
                 };
             });
